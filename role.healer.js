@@ -19,7 +19,6 @@ var roleHealer = {
         if(target != undefined){
 
             creep.memory.attacking = true;
-            console.log(target.hits);
             if(creep.heal(target) == ERR_NOT_IN_RANGE){
                 creep.moveTo(target);
 

@@ -16,7 +16,6 @@ var rolePioneer = {
 
         if(Game.flags.claim != undefined){
             let targetRoomName = Game.flags.claim.room;
-            console.log(targetRoomName);
 
             if(targetRoomName != undefined && creep.pos.roomName == targetRoomName.name){
 

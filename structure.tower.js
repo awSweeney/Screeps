@@ -8,8 +8,6 @@ var tower = {
             }
         });
         
-        console.log(hostiles.length);
-        
         if(hostiles.length == 0){
             hostiles = Game.rooms[roomName].find(FIND_HOSTILE_CREEPS);
         }

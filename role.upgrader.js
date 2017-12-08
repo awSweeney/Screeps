@@ -22,7 +22,7 @@ var roleUpgrader = {
             }
         }
         else {
-            actionCollect.fromStorage(creep);
+            actionCollect.fromReserves(creep);
         }
 	}
 };

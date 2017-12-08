@@ -16,13 +16,22 @@ var roleHauler = {
         }
 
         if(!creep.memory.depositing) {
-            //Return energy giving priority on filling towers
-            var target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+
+            var target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_LINK)
                         && structure.energy > 0;
                 }
             });
+
+            if(target == undefined){
+                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                    filter: (structure) => {
+                        return (structure.structureType == STRUCTURE_STORAGE)
+                            && structure.energy > 0;
+                    }
+                });
+            }
 
             if (target != undefined) {
                 if (creep.withdraw(target, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
