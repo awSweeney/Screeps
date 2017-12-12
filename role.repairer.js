@@ -43,7 +43,7 @@ var roleRepairer = {
                 else {
                     //Repair some walls if we have nothing to do
                     repairTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                        filter: (s) => (s.hits < 100000 && s.structureType == STRUCTURE_WALL || s.hits < 100000 && s.structureType == STRUCTURE_RAMPART)
+                        filter: (s) => (s.hits < 150000 && s.structureType == STRUCTURE_WALL || s.hits < 150000 && s.structureType == STRUCTURE_RAMPART)
                     });
 
                     if (repairTarget != undefined) {

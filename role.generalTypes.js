@@ -1,3 +1,4 @@
+const EXTENSIONS_PER_HAULER = 20;
 
 module.exports = {
 
@@ -25,12 +26,16 @@ module.exports = {
                 }
             }
 
-            spawn.spawnCreep(body, name + Game.time, memory);
+            if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
+                return true;
+            }
         }
+
+        return false;
     },
 
     longRangeHarvester: function(spawn, energy){
-        var minimumQuantity = 2;
+        var minimumQuantity = 3;
         var memory = {memory: {role: 'longRangeHarvester', home: spawn.room.name}};
         var name = 'longRangeHarvester'
         var body = [];
@@ -55,43 +60,60 @@ module.exports = {
                     }
                 }
 
-                spawn.spawnCreep(body, name + Game.time, memory);
+                if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
+                    return true;
+                }
             }
         }
+
+        return false;
     },
 
     hauler: function(spawn, energy){
-        var minimumQuantity = 1;
+
         var memory = {memory: {role: 'hauler', home: spawn.room.name}};
         var name = 'hauler'
         var body = [];
 
-        if(spawn.name != 'Spawn2') {
+        minimumQuantity = function(){
+            var extensions = spawn.room.find(FIND_STRUCTURES, {
+                filter: (structure) => structure.structureType == STRUCTURE_EXTENSION
+            });
 
-            var quantity = spawn.room.find(FIND_MY_CREEPS, {
-                filter: (creep) => (
-                    creep.memory.role == name
-                )
-            })
+            if(extensions.length <= EXTENSIONS_PER_HAULER){
+                return 1;
+            }
+            else{
+                return (EXTENSIONS_PER_HAULER % extensions.length) / (EXTENSIONS_PER_HAULER / 2);
+            }
 
+        }
 
-            if (quantity.length < minimumQuantity) {
-                var allowance = Math.floor(energy / 300);
+        var quantity = spawn.room.find(FIND_MY_CREEPS, {
+            filter: (creep) => (
+                creep.memory.role == name
+            )
+        })
 
-                if (allowance >= 1) {
-                    for (var x = 0; x < allowance; x++) {
-                        body.push(WORK);
-                        body.push(CARRY);
-                        body.push(CARRY);
-                        body.push(MOVE);
-                        body.push(MOVE);
-                    }
+        if (quantity.length < minimumQuantity()) {
+            var allowance = Math.floor(energy / 300);
+
+            if (allowance >= 1) {
+                for (var x = 0; x < allowance; x++) {
+                    body.push(WORK);
+                    body.push(CARRY);
+                    body.push(CARRY);
+                    body.push(MOVE);
+                    body.push(MOVE);
                 }
+            }
 
-                spawn.spawnCreep(body, name + Game.time, memory);
+            if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
+                return true;
             }
         }
 
+        return false;
     },
 
     soldier: function(spawn, energy){
@@ -123,10 +145,13 @@ module.exports = {
                         body.push(MOVE);
                     }
 
-                    spawn.spawnCreep(body, name + Game.time, memory);
+                    if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
+                        return true;
+                    }
                 }
             }
         }
+        return false;
     },
 
     builder: function(spawn, energy){
@@ -135,7 +160,13 @@ module.exports = {
             var buildingProjects = spawn.room.find(FIND_CONSTRUCTION_SITES);
 
             if(buildingProjects.length > 0){
-                return Math.floor(buildingProjects.length / 3);
+
+                if(buildingProjects.length == 3){
+                    return 1;
+                }
+                else{
+                    return Math.floor(buildingProjects.length % 3);
+                }
             }
             else{
                 return 0;
@@ -165,13 +196,17 @@ module.exports = {
                     }
                 }
 
-                spawn.spawnCreep(body, name + Game.time, memory);
+                if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
+                    return true;
+                }
             }
         }
+
+        return false;
     },
 
     upgrader: function(spawn, energy){
-        var minimumQuantity = 1;
+        var minimumQuantity = 2;
         var memory = {memory: {role: 'upgrader', home: spawn.room.name}};
         var name = 'upgrader'
         var body = [];
@@ -194,8 +229,12 @@ module.exports = {
                 }
             }
 
-            spawn.spawnCreep(body, name + Game.time, memory);
+            if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
+                return true;
+            }
         }
+
+        return false;
     },
 
     repairer: function(spawn, energy){
@@ -222,14 +261,20 @@ module.exports = {
                 }
             }
 
-            spawn.spawnCreep(body, name + Game.time, memory);
+            if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
+                return true;
+            }
         }
+
+        return false;
     },
 
-    /*rangedSoldier: {
-        minimumQuantity: 2,
-        properties: [RANGED_ATTACK, MOVE, MOVE],
-        memory: function(spawn) {
+/*
+
+    rangedSoldier: {
+            minimumQuantity: 2,
+            properties: [RANGED_ATTACK, MOVE, MOVE],
+            memory: function(spawn) {
             return {memory: {role: 'rangedSoldier'}}
         },
         name: 'rangedSoldier'
@@ -252,23 +297,5 @@ module.exports = {
         },
         name: 'healer'
     },
-
-    claimer:{
-        minimumQuantity: 0,
-        properties: [CLAIM, MOVE, MOVE],
-        memory: function(spawn) {
-            return {memory: {role: 'claimer'}}
-        },
-        name: 'claimer'
-    },
-
-    pioneer:{
-        minimumQuantity: 0,
-        properties: [WORK, WORK, CARRY, MOVE, MOVE, MOVE],
-        memory: function(spawn) {
-            {memory: {role: 'pioneer'}}
-        },
-        name: 'pioneer'
-    }*/
-
+*/
 };

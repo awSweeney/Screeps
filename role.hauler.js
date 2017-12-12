@@ -1,4 +1,5 @@
 var actionCollect = require('action.collectResources');
+var actionDeposit = require('action.depositResouces');
 
 var roleHauler = {
 
@@ -8,59 +9,32 @@ var roleHauler = {
 
         if(creep.carry.energy == 0) {
             creep.memory.depositing = false;
-            creep.say('🔄 collect');
+            creep.say('🔄');
         }
         if(!creep.memory.depositing && creep.carry.energy == creep.carryCapacity) {
             creep.memory.depositing = true;
-            creep.say('✔ deposit');
+            creep.say('✔');
         }
+
 
         if(!creep.memory.depositing) {
 
-            var target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_LINK)
-                        && structure.energy > 0;
-                }
+            var links = creep.room.find(FIND_STRUCTURES,{
+                filter: (structure) => structure.structureType == STRUCTURE_LINK
             });
 
-            if(target == undefined){
-                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return (structure.structureType == STRUCTURE_STORAGE)
-                            && structure.energy > 0;
-                    }
-                });
-            }
-
-            if (target != undefined) {
-                if (creep.withdraw(target, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#00ff00'}});
+            if(links.length > 0){
+                if(!actionCollect.fromLink(creep)){
+                    actionCollect.fromReserves(creep);
                 }
+            }
+            else{
+                actionCollect.fromReserves(creep);
             }
         }
         else{
-
-            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return (
-                        structure.structureType == STRUCTURE_EXTENSION ||
-                        structure.structureType == STRUCTURE_CONTAINER)
-                        && structure.energy < structure.energyCapacity
-                        || _.sum(structure.store) < structure.storeCapacity;
-                }
-            });
-
-            if (target != undefined) {
-                if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#00ff00'}});
-                }
-            }
+            actionDeposit.toExtensions(creep);
         }
-
-
-
-
     }
 };
 

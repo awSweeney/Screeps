@@ -1,4 +1,4 @@
-//All purpose worker to get a room going
+//Quick all purpose creep that will go to a claim flag to kickstart a room until it's self sustaining
 
 var rolePioneer = {
 
