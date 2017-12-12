@@ -17,9 +17,11 @@ var runStructures = {
             else {
                 invasion = false;
             }
+
+            link.run(roomName);
         }
 
-        link.run();
+
         spawnManager.run();
     }
 }

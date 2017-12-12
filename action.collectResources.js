@@ -2,23 +2,19 @@ var actionCollectResources = {
 
     fromLink: function(creep){
 
-        var target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (structure.structureType == STRUCTURE_LINK)
-                    && structure.energy > 0;
-            }
-        });
+        if(creep.room.memory.collectLink != undefined){
+            var target = Game.getObjectById(creep.room.memory.collectLink);
 
-        if (target != undefined) {
-            if (creep.withdraw(target, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
-            }
+            if (target != undefined && target.energy > 0) {
+                if (creep.withdraw(target, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                }
 
-            return true;
+                return true;
+            }
         }
-        else{
-            return false;
-        }
+
+        return false;
     },
 
     fromExtensions: function(creep) {

@@ -1,18 +1,47 @@
-/*
- * Module code goes here. Use 'module.exports' to export things:
- * module.exports.thing = 'a thing';
- *
- * You can import it from another modules like this:
- * var mod = require('structure.link');
- * mod.thing == 'a thing'; // true
- */
 var link = {
-    run: function(){
-        var link = Game.getObjectById("5a2344739ce0454d5bea1e6a");
-        var dlink = Game.getObjectById("5a243674baad905ff5f287ca");
+    run: function(roomName){
 
-        if(link.cooldown == 0) {
-            link.transferEnergy(dlink, link.energy - dlink.energy);
+        //Check to see if room has links defined, if not try and locate and define links
+        if(Game.rooms[roomName].memory.depositLink == undefined || Game.rooms[roomName].memory.collectLink == undefined){
+
+            var links = Game.rooms[roomName].find(FIND_STRUCTURES, {
+                filter: (structure) => structure.structureType == STRUCTURE_LINK
+            });
+
+            if(links.length > 0){
+
+                for(var link in links){
+
+                    if(Game.flags.collectLink != undefined){
+                        console.log(links[link].pos);
+
+                        if(Game.flags.collectLink.pos.isEqualTo(links[link].pos)){
+                            Game.rooms[roomName].memory.collectLink = links[link].id;
+                            Game.flags.collectLink.remove();
+                        }
+                    }
+                    else{
+                        if(Game.flags.depositLink != undefined){
+                            if(Game.flags.depositLink.pos.isEqualTo(links[link].pos)){
+                                Game.rooms[roomName].memory.depositLink = links[link].id;
+                                Game.flags.depositLink.remove();
+                            }
+
+                        }
+                        else{
+                            console.log("Link flag not found for " + roomName + ". Use collectLink or depositLink flags to mark link types");
+                        }
+                    }
+                }
+            }
+        }
+        else{
+            var collectLink = Game.getObjectById(Game.rooms[roomName].memory.collectLink);
+            var depositLink = Game.getObjectById(Game.rooms[roomName].memory.depositLink);
+
+            if(depositLink.cooldown == 0 && depositLink.energy > 0){
+                depositLink.transferEnergy(collectLink, depositLink - collectLink);
+            }
         }
     }
 };
