@@ -8,11 +8,11 @@ var roleBuilder = {
 
 	    if(creep.memory.building && creep.carry.energy == 0) {
             creep.memory.building = false;
-            creep.say('🔄 collect');
+            creep.say('🔄');
 	    }
 	    if(!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
 	        creep.memory.building = true;
-	        creep.say('🔨 build');
+	        creep.say('🔨');
 	    }
 
 	    if(creep.memory.building) {
@@ -28,7 +28,7 @@ var roleBuilder = {
             }
 	    }
 	    else {
-	        actionCollect.fromReserves(creep);
+	        actionCollect.fromStorage(creep);
 	    }
 	}
 };

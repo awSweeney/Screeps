@@ -1,4 +1,5 @@
 const EXTENSIONS_PER_HAULER = 20;
+const CONSTRUCTION_SITES_PER_BUILDER = 3;
 
 module.exports = {
 
@@ -71,7 +72,7 @@ module.exports = {
 
     hauler: function(spawn, energy){
 
-        var memory = {memory: {role: 'hauler', home: spawn.room.name}};
+        var memory = {memory: {role: 'hauler', home: spawn.room.name, gatheredFromStorage: false}};
         var name = 'hauler'
         var body = [];
 
@@ -80,12 +81,9 @@ module.exports = {
                 filter: (structure) => structure.structureType == STRUCTURE_EXTENSION
             });
 
-            if(extensions.length <= EXTENSIONS_PER_HAULER){
-                return 1;
-            }
-            else{
-                return (EXTENSIONS_PER_HAULER % extensions.length) / (EXTENSIONS_PER_HAULER / 2);
-            }
+            var quantity = extensions.length / EXTENSIONS_PER_HAULER;
+
+            return quantity >= 0 ? Math.ceil(quantity) : Math.floor(quantity);
 
         }
 
@@ -156,17 +154,15 @@ module.exports = {
 
     builder: function(spawn, energy){
 
+
         var minimumQuantity = function(){
             var buildingProjects = spawn.room.find(FIND_CONSTRUCTION_SITES);
 
             if(buildingProjects.length > 0){
 
-                if(buildingProjects.length == 3){
-                    return 1;
-                }
-                else{
-                    return Math.floor(buildingProjects.length % 3);
-                }
+                var quantity = buildingProjects.length / CONSTRUCTION_SITES_PER_BUILDER;
+
+                return quantity >= 0 ? Math.ceil(quantity) : Math.floor(quantity);
             }
             else{
                 return 0;

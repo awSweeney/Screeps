@@ -1,9 +1,11 @@
+var depositResources = require('action.depositResouces');
+
 var roleHarvester = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
 
-
+        //Get the harvester back in the right room if it happens to path outside
         if(creep.memory.home != creep.room.name){
             creep.moveTo(Game.rooms[creep.memory.home].controller);
         }
@@ -17,20 +19,8 @@ var roleHarvester = {
                 }
             }
             else {
-                var target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: (structure) => {
-                        return (structure.structureType == STRUCTURE_EXTENSION ||
-                            structure.structureType == STRUCTURE_SPAWN ||
-                            structure.structureType == STRUCTURE_TOWER
-                            )
-                            && structure.energy < structure.energyCapacity
-                            || _.sum(structure.store) < structure.storeCapacity;
-                    }
-                });
-                if (target != undefined) {
-                    if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
-                    }
+                if(!depositResources.toSpawn(creep)){
+                    depositResources.toStorage(creep);
                 }
             }
         }

@@ -58,7 +58,7 @@ var roleRepairer = {
             }
         }
         else {
-            actionCollect.fromReserves(creep);
+            actionCollect.fromStorage(creep);
         }
     }
 };

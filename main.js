@@ -3,7 +3,6 @@ var runStructures = require('run.structures');
 
 module.exports.loop = function () {
 
-
     try {
         runStructures.run();
     }

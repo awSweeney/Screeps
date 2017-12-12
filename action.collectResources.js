@@ -21,7 +21,7 @@ var actionCollectResources = {
         }
     },
 
-    fromStorage: function(creep) {
+    fromExtensions: function(creep) {
 
 
         var EnergyStructures = creep.pos.findClosestByRange(FIND_STRUCTURES, {
@@ -35,7 +35,7 @@ var actionCollectResources = {
         }
     },
 
-    fromReserves: function(creep){
+    fromStorage: function(creep){
 
         var EnergyStructures = creep.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (s) => (
