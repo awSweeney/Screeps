@@ -4,87 +4,80 @@ const CONSTRUCTION_SITES_PER_BUILDER = 3;
 module.exports = {
 
     harvester: function(spawn, energy){
-        var minimumQuantity = 2;
-        var memory = {memory: {role: 'harvester', home: spawn.room.name}};
         var name = 'harvester'
         var body = [];
+        var roomName = spawn.room.name;
 
-        var quantity =  spawn.room.find(FIND_MY_CREEPS,{
-            filter: (creep) => (
-                creep.memory.role == name
-            )
-        })
-
-
-        if(quantity.length < minimumQuantity){
-            var allowance = Math.floor(energy / 200);
-
-            if(allowance >= 1){
-                for(var x = 0; x < allowance; x++){
-                    body.push(WORK);
-                    body.push(CARRY);
-                    body.push(MOVE);
-                }
-            }
-
-            if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
-                return true;
-            }
+        if(Game.rooms[roomName].memory.sources == undefined){
+            console.log("Harvester attempted to spawn but room data not setup");
+            return false;
         }
+        else{
 
-        return false;
-    },
-
-    longRangeHarvester: function(spawn, energy){
-        var minimumQuantity = 3;
-        var memory = {memory: {role: 'longRangeHarvester', home: spawn.room.name}};
-        var name = 'longRangeHarvester'
-        var body = [];
-
-        if(spawn.name != 'Spawn2'){
             var quantity =  spawn.room.find(FIND_MY_CREEPS,{
                 filter: (creep) => (
                     creep.memory.role == name
                 )
-            })
+            });
 
+            if(quantity.length < Game.rooms[roomName].memory.roomRequiredHarvesters) {
 
-            if(quantity.length < minimumQuantity){
-                var allowance = Math.floor(energy / 300);
+                var sources = Game.rooms[roomName].memory.sources;
 
-                if(allowance >= 1){
-                    for(var x = 0; x < allowance; x++){
-                        body.push(WORK);
-                        body.push(WORK);
-                        body.push(CARRY);
-                        body.push(MOVE);
+                for (var source in sources) {
+
+                    quantity = spawn.room.find(FIND_MY_CREEPS, {
+                        filter: (creep) => (
+                            creep.memory.role == name && creep.memory.assignedNode == sources[source].nodeID
+                        )
+                    })
+
+                    if (quantity.length < sources[source].minimumQuantity) {
+                        var allowance = Math.floor(energy / 200);
+
+                        if (allowance >= 1) {
+                            for (var x = 0; x < allowance; x++) {
+                                body.push(WORK);
+                                body.push(CARRY);
+                                body.push(MOVE);
+                            }
+                        }
+
+                        if (spawn.spawnCreep(body, name + Game.time, {memory: {role: 'harvester', home: spawn.room.name, assignedNode: sources[source].nodeID}}) == OK) {
+                            return true;
+                        }
+
+                        return false;
                     }
-                }
 
-                if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
-                    return true;
                 }
             }
         }
 
-        return false;
     },
 
     hauler: function(spawn, energy){
+
 
         var memory = {memory: {role: 'hauler', home: spawn.room.name, gatheredFromStorage: false}};
         var name = 'hauler'
         var body = [];
 
-        minimumQuantity = function(){
+        var minimumQuantity = function(){
+
             var extensions = spawn.room.find(FIND_STRUCTURES, {
                 filter: (structure) => structure.structureType == STRUCTURE_EXTENSION
             });
 
-            var quantity = extensions.length / EXTENSIONS_PER_HAULER;
 
-            return quantity >= 0 ? Math.ceil(quantity) : Math.floor(quantity);
+            if(extensions != undefined){
 
+                var quantity = extensions.length / EXTENSIONS_PER_HAULER;
+
+                return quantity >= 0 ? Math.ceil(quantity) : Math.floor(quantity);
+            }
+
+            return 0;
         }
 
         var quantity = spawn.room.find(FIND_MY_CREEPS, {
@@ -158,7 +151,9 @@ module.exports = {
         var minimumQuantity = function(){
             var buildingProjects = spawn.room.find(FIND_CONSTRUCTION_SITES);
 
-            if(buildingProjects.length > 0){
+
+
+            if(buildingProjects != undefined){
 
                 var quantity = buildingProjects.length / CONSTRUCTION_SITES_PER_BUILDER;
 
@@ -202,7 +197,7 @@ module.exports = {
     },
 
     upgrader: function(spawn, energy){
-        var minimumQuantity = 2;
+        var minimumQuantity = spawn.room.memory.sourceNodes;
         var memory = {memory: {role: 'upgrader', home: spawn.room.name}};
         var name = 'upgrader'
         var body = [];

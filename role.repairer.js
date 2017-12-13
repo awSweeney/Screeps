@@ -8,11 +8,11 @@ var roleRepairer = {
 
         if(creep.memory.building && creep.carry.energy == 0) {
             creep.memory.building = false;
-            creep.say('🔄 collect');
+            creep.say('🔄');
         }
         if(!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
             creep.memory.building = true;
-            creep.say('🔨 repair');
+            creep.say('🔨');
         }
 
         if(creep.memory.building) {
@@ -58,7 +58,9 @@ var roleRepairer = {
             }
         }
         else {
-            actionCollect.fromStorage(creep);
+            if(!actionCollect.fromStorage(creep)){
+                actionCollect.fromContainer(creep);
+            }
         }
     }
 };

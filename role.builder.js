@@ -28,7 +28,9 @@ var roleBuilder = {
             }
 	    }
 	    else {
-	        actionCollect.fromStorage(creep);
+	        if(!actionCollect.fromStorage(creep)){
+	        	actionCollect.fromContainer(creep);
+			}
 	    }
 	}
 };

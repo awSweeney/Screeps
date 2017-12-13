@@ -1,6 +1,6 @@
 ## Screeps AI
 
-WIP AI for the game screeps. End goal to make it autonomous as possible.
+WIP AI for the game screeps.
 
 ## Flag Usage
 

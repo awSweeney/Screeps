@@ -33,13 +33,17 @@ var roleHauler = {
 
             if(links.length > 0){
                 if(!actionCollect.fromLink(creep)){
-                    actionCollect.fromStorage(creep);
+                    if(!actionCollect.fromStorage(creep)){
+                        actionCollect.fromContainer(creep);
+                    }
                     creep.memory.gatheredFromStorage = true;
                     creep.memory.gatheredFromStorageTime = Game.time;
                 }
             }
             else{
-                actionCollect.fromStorage(creep);
+                if(!actionCollect.fromStorage(creep)){
+                    actionCollect.fromContainer(creep);
+                }
                 creep.memory.gatheredFromStorage = true;
                 creep.memory.gatheredFromStorageTime = Game.time;
             }
@@ -54,7 +58,9 @@ var roleHauler = {
             }
 
             if(!actionDeposit.toExtensions(creep) && !creep.memory.gatheredFromStorage){
-                actionDeposit.toStorage(creep);
+                if(!actionDeposit.toStorage(creep)){
+                    actionDeposit.toContainer(creep);
+                }
             };
         }
     }

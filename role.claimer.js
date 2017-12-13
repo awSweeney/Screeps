@@ -11,7 +11,7 @@ var roleClaimer = {
                     creep.moveTo(Game.rooms[targetRoomName.name].controller);
                 }
                 else{
-                    creep.signController(Game.rooms[targetRoomName.name].controller, "Claimed by Shay");
+                    creep.signController(Game.rooms[targetRoomName.name].controller, "Claimed by:");
                 }
             }
             else{

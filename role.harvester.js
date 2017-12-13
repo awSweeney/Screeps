@@ -13,15 +13,25 @@ var roleHarvester = {
             
         
             if (creep.carry.energy < creep.carryCapacity) {
-                var sources = creep.room.find(FIND_SOURCES);
-                if (creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+                var target = Game.getObjectById(creep.memory.assignedNode);
+
+                if (target != undefined && target.energy > 0) {
+
+                    if (creep.harvest(target, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                    }
                 }
             }
             else {
-                if(!depositResources.toSpawn(creep)){
-                    depositResources.toStorage(creep);
+                if(!depositResources.toLink(creep)){
+                    if(!depositResources.toSpawn(creep)){
+                        if(!depositResources.toContainer(creep)){
+                            depositResources.toStorage(creep);
+                        }
+                    }
                 }
+
+
             }
         }
 	}

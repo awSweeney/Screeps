@@ -2,7 +2,6 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleRepairer = require('role.repairer');
-var roleLongRangeHarvester = require('role.longRangeHarvester');
 var roleClaimer = require('role.claimer');
 var rolePioneer = require('role.pioneer');
 var roleSoldier = require('role.soldier');
@@ -38,10 +37,6 @@ var runCreeps = {
 
             if(creep.memory.role == 'harvester') {
                 roleHarvester.run(creep);
-            }
-
-            if (creep.memory.role == 'longRangeHarvester') {
-                roleLongRangeHarvester.run(creep);
             }
 
             if (creep.memory.role == 'upgrader') {
