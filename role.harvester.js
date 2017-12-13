@@ -24,9 +24,9 @@ var roleHarvester = {
             }
             else {
                 if(!depositResources.toLink(creep)){
-                    if(!depositResources.toSpawn(creep)){
-                        if(!depositResources.toContainer(creep)){
-                            depositResources.toStorage(creep);
+                    if(!depositResources.toContainer(creep)){
+                        if(!depositResources.toStorage(creep)){
+                            depositResources.toSpawn(creep);
                         }
                     }
                 }

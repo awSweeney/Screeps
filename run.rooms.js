@@ -18,7 +18,7 @@ function sourceMonitor(room){
         else{
             if(node.ticksToRegeneration == 20 && node.energy > 0){
 
-                var quantity = spawn.room.find(FIND_MY_CREEPS, {
+                var quantity = Game.rooms[room].find(FIND_MY_CREEPS, {
                     filter: (creep) => (
                         creep.memory.assignedNode == sources[source].nodeID
                     )

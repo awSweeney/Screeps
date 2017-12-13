@@ -1,5 +1,5 @@
 const EXTENSIONS_PER_HAULER = 20;
-const CONSTRUCTION_SITES_PER_BUILDER = 3;
+const CONSTRUCTION_SITES_PER_BUILDER = 20;
 
 module.exports = {
 
@@ -87,14 +87,11 @@ module.exports = {
         })
 
         if (quantity.length < minimumQuantity()) {
-            var allowance = Math.floor(energy / 300);
+            var allowance = Math.floor(energy / 100);
 
             if (allowance >= 1) {
                 for (var x = 0; x < allowance; x++) {
-                    body.push(WORK);
                     body.push(CARRY);
-                    body.push(CARRY);
-                    body.push(MOVE);
                     body.push(MOVE);
                 }
             }
@@ -197,7 +194,7 @@ module.exports = {
     },
 
     upgrader: function(spawn, energy){
-        var minimumQuantity = spawn.room.memory.sourceNodes;
+        var minimumQuantity = 1;
         var memory = {memory: {role: 'upgrader', home: spawn.room.name}};
         var name = 'upgrader'
         var body = [];

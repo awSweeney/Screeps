@@ -24,9 +24,12 @@ var ManagerSpawn = {
                     filter: (creep) => creep.memory.role == 'harvester'
                 })
 
+                var energyAvailable = currentSpawn.room.energyAvailable * 0.75;
+                energyAvailable = energyAvailable < 300 ? energyAvailable = 300 : energyAvailable;
+
                 //If a room has no harvesters only focus on spawning harvesters, will spawn even if spawn is on cooldown
                 if(harvesters.length == 0){
-                    generalTypes.harvester(currentSpawn, currentSpawn.room.energyAvailable)
+                    generalTypes.harvester(currentSpawn, energyAvailable)
                 }
                 else{
 
@@ -38,7 +41,7 @@ var ManagerSpawn = {
                     if(Game.time - currentSpawn.room.memory.lastSpawn >= SPAWN_DELAY_TICKS) {
 
                         for (var type in generalTypes) {
-                            if (generalTypes[type](currentSpawn, currentSpawn.room.energyAvailable)) {
+                            if (generalTypes[type](currentSpawn, energyAvailable)) {
                                 currentSpawn.room.memory.lastSpawn = Game.time;
                             }
                         }

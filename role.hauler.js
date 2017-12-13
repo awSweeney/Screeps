@@ -33,16 +33,16 @@ var roleHauler = {
 
             if(links.length > 0){
                 if(!actionCollect.fromLink(creep)){
-                    if(!actionCollect.fromStorage(creep)){
-                        actionCollect.fromContainer(creep);
+                    if(!actionCollect.fromContainer(creep)){
+                        actionCollect.fromStorage(creep);
                     }
                     creep.memory.gatheredFromStorage = true;
                     creep.memory.gatheredFromStorageTime = Game.time;
                 }
             }
             else{
-                if(!actionCollect.fromStorage(creep)){
-                    actionCollect.fromContainer(creep);
+                if(!actionCollect.fromContainer(creep)){
+                    actionCollect.fromStorage(creep);
                 }
                 creep.memory.gatheredFromStorage = true;
                 creep.memory.gatheredFromStorageTime = Game.time;
@@ -57,11 +57,13 @@ var roleHauler = {
                 }
             }
 
-            if(!actionDeposit.toExtensions(creep) && !creep.memory.gatheredFromStorage){
-                if(!actionDeposit.toStorage(creep)){
-                    actionDeposit.toContainer(creep);
-                }
-            };
+            if(!actionDeposit.toSpawn(creep)){
+                if(!actionDeposit.toExtensions(creep) && !creep.memory.gatheredFromStorage){
+                    if(!actionDeposit.toStorage(creep)){
+                        actionDeposit.toContainer(creep);
+                    }
+                };
+            }
         }
     }
 };
