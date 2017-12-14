@@ -28,7 +28,7 @@ var roleHealer = {
             creep.memory.attacking = false;
             var posInAnotherRoom = new RoomPosition(6, 15, 'W37N21');
             creep.moveTo(posInAnotherRoom, {visualizePathStyle: {stroke: '#ffffff'}});
-            //creep.moveTo(Game.flags.standby);
+            //creep.travelTo(Game.flags.standby);
         }
 
     }

@@ -1,4 +1,5 @@
 var actionCollect = require('action.collectResources');
+var actionMove = require('action.move');
 
 var roleUpgrader = {
 
@@ -17,7 +18,7 @@ var roleUpgrader = {
 	    if(creep.memory.upgrading) {
 
             if(creep.upgradeController(Game.rooms[creep.memory.home].controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.rooms[creep.memory.home].controller, {visualizePathStyle: {stroke: '#ffffff'}});
+                actionMove.travelTo(creep, Game.rooms[creep.memory.home].controller);
             }
         }
         else {

@@ -75,8 +75,30 @@ function setupRooms(room) {
         Game.rooms[room].memory.sourceNodes = sources.length;
     }
 
-}
+    //Recycle gains were not efficient for breaking hauler path routines
+    //If this is reactivated also reactivate recycle portion of roles.retired
+    /*if(Game.rooms[room].memory.recyclePoint == null){
+        var spawns = Game.rooms[room].find(FIND_MY_SPAWNS);
 
+        if(spawns.length > 0){
+            var containers = Game.rooms[room].find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return (
+                        structure.structureType == STRUCTURE_CONTAINER)
+                }
+            });
+
+            for(var container in containers){
+                for(var spawn in spawns){
+                    if(spawns[spawn].pos.getRangeTo(containers[container].pos) == 1){
+                        Game.rooms[room].memory.recyclePoint = containers[container].id;
+                        Game.rooms[room].memory.recycleSpawn = spawns[spawn].id;
+                    }
+                }
+            }
+        }
+    }*/
+}
 
 module.exports = {
     run: function(){

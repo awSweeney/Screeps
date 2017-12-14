@@ -1,5 +1,6 @@
 var roleRepairer = require('role.repairer');
 var actionCollect = require('action.collectResources');
+var actionMove = require('action.move');
 
 var roleBuilder = {
 
@@ -20,7 +21,7 @@ var roleBuilder = {
 
             if(targets.length > 0) {
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                    actionMove.travelTo(creep, targets[0]);
                 }
             }
             else{

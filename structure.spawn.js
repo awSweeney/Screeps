@@ -80,9 +80,11 @@ var ManagerSpawn = {
                     //Cycle through expansion types list
                     for (var type in expansionTypes) {
 
+
+
                         var quantity = _.filter(Game.creeps, (creep) => creep.memory.role == expansionTypes[type].name);
 
-                        if (quantity < expansionTypes[type].minimumQuantity()) {
+                        if (quantity.length < expansionTypes[type].minimumQuantity()) {
 
                             //Find the closest spawn point to the claim point
                             for (var spawn in Game.spawns) {

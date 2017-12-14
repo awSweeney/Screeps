@@ -1,18 +1,25 @@
+var actionMove = require('action.move');
+
 var actionDepositResources = {
 
     toLink: function(creep){
 
-        if(creep.room.memory.depositLink != undefined){
+        if(creep.room.memory.depositLinks.length > 0){
 
-            var rangeTest = creep.pos.getRangeTo(Game.getObjectById(creep.room.memory.depositLink));
+            for(var link in creep.room.memory.depositLinks){
 
-            if(rangeTest <= 3){
+                var rangeTest = creep.pos.getRangeTo(Game.getObjectById(creep.room.memory.depositLinks[link]));
 
-                if (creep.transfer(Game.getObjectById(creep.room.memory.depositLink), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(Game.getObjectById(creep.room.memory.depositLink), {visualizePathStyle: {stroke: '#ffffff'}});
+
+                if(rangeTest <= 3){
+
+                    if (creep.transfer(Game.getObjectById(creep.room.memory.depositLinks[link]), RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        actionMove.travelTo(creep, Game.getObjectById(creep.room.memory.depositLinks[link]));
+                    }
+                    return true;
                 }
-                return true;
             }
+            return false;
         }
 
         return false;
@@ -31,7 +38,7 @@ var actionDepositResources = {
         if (target != undefined) {
 
             if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                actionMove.travelTo(creep, target);
             }
 
             return true;
@@ -52,7 +59,7 @@ var actionDepositResources = {
         if (target != undefined) {
 
             if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                actionMove.travelTo(creep, target);
             }
 
             return true;
@@ -74,7 +81,7 @@ var actionDepositResources = {
         if (target != undefined) {
 
             if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                actionMove.travelTo(creep, target);
             }
 
             return true;
@@ -95,7 +102,7 @@ var actionDepositResources = {
 
         if(target != undefined){
             if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE){
-                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                actionMove.travelTo(creep, target);
             }
 
             return true;

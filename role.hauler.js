@@ -13,10 +13,16 @@ var roleHauler = {
             creep.memory.gatheredFromStorage = false;
         }
 
+        if(creep.memory.gatheredFromContainer == null){
+            creep.memory.gatheredFromContainer = false;
+        }
+
         if(creep.carry.energy == 0) {
             creep.memory.depositing = false;
             creep.memory.gatheredFromStorage = false;
+            creep.memory.gatheredFromContainer = false;
             creep.memory.gatheredFromStorageTime = 0;
+            creep.memory.gatheredFromContainerTime = 0;
             creep.say('🔄');
         }
         if(!creep.memory.depositing && creep.carry.energy == creep.carryCapacity) {
@@ -34,18 +40,31 @@ var roleHauler = {
             if(links.length > 0){
                 if(!actionCollect.fromLink(creep)){
                     if(!actionCollect.fromContainer(creep)){
-                        actionCollect.fromStorage(creep);
+                        if(actionCollect.fromStorage(creep)){
+                            creep.memory.gatheredFromStorage = true;
+                            creep.memory.gatheredFromStorageTime = Game.time;
+                        }
                     }
-                    creep.memory.gatheredFromStorage = true;
-                    creep.memory.gatheredFromStorageTime = Game.time;
+                    else{
+                        creep.memory.gatheredFromContainer = true;
+                        creep.memory.gatheredFromContainerTime = Game.time;
+                    }
+
                 }
             }
             else{
                 if(!actionCollect.fromContainer(creep)){
-                    actionCollect.fromStorage(creep);
+                    if(actionCollect.fromStorage(creep)) {
+                        creep.memory.gatheredFromStorage = true;
+                        creep.memory.gatheredFromStorageTime = Game.time;
+                    }
+
                 }
-                creep.memory.gatheredFromStorage = true;
-                creep.memory.gatheredFromStorageTime = Game.time;
+                else{
+                    creep.memory.gatheredFromContainer = true;
+                    creep.memory.gatheredFromContainerTime = Game.time;
+                }
+
             }
         }
         else{
@@ -54,6 +73,13 @@ var roleHauler = {
                 if(Game.time - creep.memory.gatheredFromStorageTime >= STORAGE_CHECK_CD){
                     creep.memory.gatheredFromStorage = false;
                     creep.memory.gatheredFromStorageTime = 0;
+                }
+            }
+
+            if(creep.memory.gatheredFromContainerTime > 0 && creep.memory.gatheredFromContainer){
+                if(Game.time - creep.memory.gatheredFromContainerTime >= STORAGE_CHECK_CD){
+                    creep.memory.gatheredFromContainer = false;
+                    creep.memory.gatheredFromContainer = 0;
                 }
             }
 

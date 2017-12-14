@@ -194,7 +194,7 @@ module.exports = {
     },
 
     upgrader: function(spawn, energy){
-        var minimumQuantity = 1;
+        var minimumQuantity = spawn.room.memory.sourceNodes;
         var memory = {memory: {role: 'upgrader', home: spawn.room.name}};
         var name = 'upgrader'
         var body = [];

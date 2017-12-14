@@ -1,4 +1,5 @@
 var depositResources = require('action.depositResouces');
+var actionMove = require('action.move');
 
 var roleHarvester = {
 
@@ -18,7 +19,7 @@ var roleHarvester = {
                 if (target != undefined && target.energy > 0) {
 
                     if (creep.harvest(target, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                        actionMove.travelTo(creep, target);
                     }
                 }
             }

@@ -1,17 +1,24 @@
+var actionMove = require('action.move');
+
 var actionCollectResources = {
 
     fromLink: function(creep){
 
-        if(creep.room.memory.collectLink != undefined){
-            var target = Game.getObjectById(creep.room.memory.collectLink);
+        if(creep.room.memory.collectLinks.length > 0){
 
-            if (target != undefined && target.energy > 0) {
-                if (creep.withdraw(target, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+            for(var link in creep.room.memory.collectLinks){
+
+                var target = Game.getObjectById(creep.room.memory.collectLinks[link]);
+
+                if (target.energy > 0) {
+                    if (creep.withdraw(target, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
+                        actionMove.travelTo(creep, target);
+                    }
+
+                    return true;
                 }
-
-                return true;
             }
+
         }
 
         return false;
@@ -29,7 +36,7 @@ var actionCollectResources = {
         if(EnergyStructures != undefined){
 
             if(creep.withdraw(EnergyStructures, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(EnergyStructures, {visualizePathStyle: {stroke: '#ffffff'}});
+                actionMove.travelTo(creep, EnergyStructures);
             }
 
             return true;
@@ -50,7 +57,7 @@ var actionCollectResources = {
         if(EnergyStructures != undefined){
 
             if(creep.withdraw(EnergyStructures, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(EnergyStructures, {visualizePathStyle: {stroke: '#ffffff'}});
+                actionMove.travelTo(creep,EnergyStructures);
             }
 
             return true;
@@ -71,7 +78,7 @@ var actionCollectResources = {
         if(EnergyStructures != undefined){
 
             if(creep.withdraw(EnergyStructures, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(EnergyStructures, {visualizePathStyle: {stroke: '#ffffff'}});
+                actionMove.travelTo(creep, EnergyStructures);
             }
 
             return true;
