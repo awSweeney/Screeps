@@ -1,7 +1,6 @@
 function sourceMonitor(room){
 
     //If we're draining the source nodes before refresh decrease the amount of harvesters we need
-
     var sources = Game.rooms[room].memory.sources;
     var requiredHarvesters = 0;
 
@@ -37,9 +36,63 @@ function sourceMonitor(room){
     Game.rooms[room].memory.roomRequiredHarvesters = requiredHarvesters;
 }
 
+function setupLinks(room){
+    //Check to see if room has links defined, if not try and locate and define links
+    if(Game.rooms[room].memory.collectLinks == undefined) {
 
-function setupRooms(room) {
+        var links = [];
+        Game.rooms[room].memory.collectLinks = links;
+    }
+    if(Game.rooms[room].memory.depositLinks == undefined) {
 
+        var links = [];
+        Game.rooms[room].memory.depositLinks = links;
+    }
+
+    var links = Game.rooms[room].find(FIND_STRUCTURES, {
+        filter: (structure) => structure.structureType == STRUCTURE_LINK
+    });
+
+    if(links.length > 0) {
+
+        if (links.length != Game.rooms[room].memory.depositLinks.length + Game.rooms[room].memory.collectLinks.length) {
+
+            for (var link in links) {
+
+                if (Game.flags.collectLink != undefined) {
+
+                    if (Game.flags.collectLink.pos.isEqualTo(links[link].pos)) {
+
+                        if (Game.rooms[room].memory.collectLinks.includes(links[link].id) != undefined) {
+                            Game.rooms[room].memory.collectLinks.push(links[link].id);
+                            Game.flags.collectLink.remove();
+                        }
+                        else {
+                            console.log("Marked collection link already logged");
+                        }
+                    }
+                }
+
+                if (Game.flags.depositLink != undefined) {
+
+                    if (Game.flags.depositLink.pos.isEqualTo(links[link].pos)) {
+
+                        if (Game.rooms[room].memory.depositLinks.includes(links[link].id) != undefined) {
+                            Game.rooms[room].memory.depositLinks.push(links[link].id);
+                            Game.flags.depositLink.remove();
+                        }
+                    }
+                    else {
+                        console.log("Marked deposit link already logged");
+                    }
+
+                }
+            }
+        }
+    }
+}
+
+function setupSourceNodes(room){
     //setup accessible source node points across the rooms
     if(Game.rooms[room].memory.sources == undefined){
 
@@ -74,6 +127,9 @@ function setupRooms(room) {
         Game.rooms[room].memory.sources = sourceIDs;
         Game.rooms[room].memory.sourceNodes = sources.length;
     }
+}
+
+function setupRecycling(room){
 
     //Recycle gains were not efficient for breaking hauler path routines
     //If this is reactivated also reactivate recycle portion of roles.retired
@@ -98,6 +154,12 @@ function setupRooms(room) {
             }
         }
     }*/
+}
+
+function setupRooms(room) {
+    setupSourceNodes(room);
+    setupLinks(room);
+    //setupRecycling(room);
 }
 
 module.exports = {
