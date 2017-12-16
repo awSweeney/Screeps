@@ -1,5 +1,7 @@
-const EXTENSIONS_PER_HAULER = 20;
+//const EXTENSIONS_PER_HAULER = 20;
 const CONSTRUCTION_SITES_PER_BUILDER = 20;
+const HARVEST_PER_TICK_GOAL = 20; //Takes 10 energy drain per tick to drain a source node, double that for safety
+const HAULER_MAX_CARRY = 800 / CARRY_CAPACITY;
 
 module.exports = {
 
@@ -20,23 +22,74 @@ module.exports = {
                 )
             });
 
+            //If the room is missing start the process to spawn more
             if(quantity.length < Game.rooms[roomName].memory.roomRequiredHarvesters) {
 
                 var sources = Game.rooms[roomName].memory.sources;
 
+                //Check each source to figure out which is missing harvesters
                 for (var source in sources) {
 
                     quantity = spawn.room.find(FIND_MY_CREEPS, {
                         filter: (creep) => (
                             creep.memory.role == name && creep.memory.assignedNode == sources[source].nodeID
                         )
-                    })
+                    });
 
                     if (quantity.length < sources[source].minimumQuantity) {
-                        var allowance = Math.floor(energy / 200);
 
-                        if (allowance >= 1) {
-                            for (var x = 0; x < allowance; x++) {
+                        //Check to see if node has a drop off point established, link or container
+                        var node = Game.getObjectById(sources[source].nodeID);
+
+                        var targets = spawn.room.find(FIND_STRUCTURES, {
+                            filter: (s) => s.structureType == STRUCTURE_LINK ||s.structureType == STRUCTURE_CONTAINER
+                        });
+
+                        node = node.pos.findInRange(targets, 3);
+
+                        var allowance;
+
+                        //If the point has a drop off point attempt to make a non traveling harvester
+                        if(node.length > 0){
+                            allowance = Math.floor(energy / 300);
+
+                            //Try to make a harvester with more work ratio
+                            if(allowance >= 1){
+
+                                body.push(CARRY);
+
+                                for(var x = 1; x <= allowance && (HARVEST_POWER * x) <= HARVEST_PER_TICK_GOAL; x++){
+                                    body.push(WORK);
+                                    body.push(WORK);
+                                    body.push(MOVE);
+
+                                    //10 WORK, gives 20 a tick, to avoid losing 10 energy on 3rd hit add more carry
+                                    if(x % 5 == 0){
+                                        body.push(CARRY);
+                                    }
+                                }
+                            }
+                            else{ //Otherwise make a normal version
+                                allowance = Math.floor(energy / 200);
+                                body.push(CARRY);
+
+                                for (var x = 1; x <= allowance && (HARVEST_POWER * x) <= HARVEST_PER_TICK_GOAL; x++) {
+                                    body.push(WORK);
+                                    body.push(MOVE);
+
+                                    //10 WORK, gives 20 a tick, to avoid losing 10 energy on 3rd hit add more carry
+                                    if(x % 10 == 0){
+                                        body.push(CARRY);
+                                    }
+                                }
+                            }
+
+                        }
+                        else{
+                            //Make a traveling harvester if no drop off point established
+                            allowance = Math.floor(energy / 200);
+
+                            for (var x = 1; x <= allowance && (HARVEST_POWER * x) <= HARVEST_PER_TICK_GOAL; x++) {
                                 body.push(WORK);
                                 body.push(CARRY);
                                 body.push(MOVE);
@@ -72,9 +125,10 @@ module.exports = {
 
             if(extensions != undefined){
 
-                var quantity = extensions.length / EXTENSIONS_PER_HAULER;
+                return spawn.room.memory.sourceNodes;
 
-                return quantity >= 0 ? Math.ceil(quantity) : Math.floor(quantity);
+                /*var quantity = extensions.length / EXTENSIONS_PER_HAULER;
+                return quantity >= 0 ? Math.ceil(quantity) : Math.floor(quantity);*/
             }
 
             return 0;
@@ -87,12 +141,16 @@ module.exports = {
         })
 
         if (quantity.length < minimumQuantity()) {
-            var allowance = Math.floor(energy / 100);
+            var allowance = Math.floor(energy / 150);
 
             if (allowance >= 1) {
-                for (var x = 0; x < allowance; x++) {
+                for (var x = 1; x <= allowance && x <= HAULER_MAX_CARRY; x++) {
+
                     body.push(CARRY);
-                    body.push(MOVE);
+
+                    if(x % 2 == 0){
+                        body.push(MOVE);
+                    }
                 }
             }
 
@@ -106,7 +164,7 @@ module.exports = {
 
     soldier: function(spawn, energy){
 
-        var minimumQuantity = 1;
+        var minimumQuantity = 2;
         var memory = {memory: {role: 'soldier'}};
         var name = 'soldier'
         var body = [];
@@ -127,10 +185,10 @@ module.exports = {
 
                 if (allowance >= 1) {
                     for (var x = 0; x < allowance; x++) {
-                        body.push(ATTACK);
                         body.push(TOUGH);
                         body.push(MOVE);
                         body.push(MOVE);
+                        body.push(ATTACK);
                     }
 
                     if(spawn.spawnCreep(body, name + Game.time, memory) == OK){

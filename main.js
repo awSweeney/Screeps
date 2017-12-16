@@ -4,7 +4,6 @@ var runRooms = require('run.rooms');
 
 module.exports.loop = function () {
 
-
     try{
         runRooms.run();
     }

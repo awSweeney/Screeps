@@ -1,35 +1,19 @@
 var actionCollect = require('action.collectResources');
 var actionDeposit = require('action.depositResouces');
 
-//Cooldown time of a link
-var STORAGE_CHECK_CD = 30;
-
 var roleHauler = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
 
-        if(creep.memory.gatheredFromStorage == null){
-            creep.memory.gatheredFromStorage = false;
-        }
-
-        if(creep.memory.gatheredFromContainer == null){
-            creep.memory.gatheredFromContainer = false;
-        }
-
         if(creep.carry.energy == 0) {
             creep.memory.depositing = false;
-            creep.memory.gatheredFromStorage = false;
-            creep.memory.gatheredFromContainer = false;
-            creep.memory.gatheredFromStorageTime = 0;
-            creep.memory.gatheredFromContainerTime = 0;
             creep.say('🔄');
         }
         if(!creep.memory.depositing && creep.carry.energy == creep.carryCapacity) {
             creep.memory.depositing = true;
             creep.say('✔');
         }
-
 
         if(!creep.memory.depositing) {
 
@@ -38,53 +22,42 @@ var roleHauler = {
             });
 
             if(links.length > 0){
+                //Look for links
                 if(!actionCollect.fromLink(creep)){
-                    if(!actionCollect.fromContainer(creep)){
-                        if(actionCollect.fromStorage(creep)){
-                            creep.memory.gatheredFromStorage = true;
-                            creep.memory.gatheredFromStorageTime = Game.time;
+                    //If there's no links look for containers, but only if there's a place to put it
+                    if(creep.room.energyAvailable < creep.room.energyCapacityAvailable || _.sum(creep.room.storage.store) < creep.room.storage.storeCapacity){
+                        if(!actionCollect.fromContainer(creep)){
+                            //If we can't collect from a container move to collect from storage, if there's a place to put it
+                            if(creep.room.energyAvailable < creep.room.energyCapacityAvailable){
+                                if(!actionCollect.fromStorage(creep) && creep.carry > 0){
+                                    creep.memory.depositing = true;
+                                }
+                            }
+                            creep.memory.depositing = true;
                         }
                     }
-                    else{
-                        creep.memory.gatheredFromContainer = true;
-                        creep.memory.gatheredFromContainerTime = Game.time;
-                    }
-
+                    creep.memory.depositing = true;
                 }
             }
             else{
-                if(!actionCollect.fromContainer(creep)){
-                    if(actionCollect.fromStorage(creep)) {
-                        creep.memory.gatheredFromStorage = true;
-                        creep.memory.gatheredFromStorageTime = Game.time;
+                //Collect from containers if there's a place to put it
+                if(creep.room.energyAvailable < creep.room.energyCapacityAvailable || _.sum(creep.room.storage.store) < creep.room.storage.storeCapacity) {
+                    if (!actionCollect.fromContainer(creep)) {
+                        //Otherwise collect from storage if there's a place to put it
+                        if (creep.room.energyAvailable < creep.room.energyCapacityAvailable) {
+                            if (!actionCollect.fromStorage(creep)) {
+                                creep.memory.depositing = true;
+                            }
+                        }
+                        creep.memory.depositing = true;
                     }
-
                 }
-                else{
-                    creep.memory.gatheredFromContainer = true;
-                    creep.memory.gatheredFromContainerTime = Game.time;
-                }
-
             }
         }
         else{
-            //If we've been able to deposit for awhile due to collecting from storage, throw it back in storage and try to collect elsewhere
-            if(creep.memory.gatheredFromStorageTime > 0 && creep.memory.gatheredFromStorage){
-                if(Game.time - creep.memory.gatheredFromStorageTime >= STORAGE_CHECK_CD){
-                    creep.memory.gatheredFromStorage = false;
-                    creep.memory.gatheredFromStorageTime = 0;
-                }
-            }
-
-            if(creep.memory.gatheredFromContainerTime > 0 && creep.memory.gatheredFromContainer){
-                if(Game.time - creep.memory.gatheredFromContainerTime >= STORAGE_CHECK_CD){
-                    creep.memory.gatheredFromContainer = false;
-                    creep.memory.gatheredFromContainer = 0;
-                }
-            }
 
             if(!actionDeposit.toSpawn(creep)){
-                if(!actionDeposit.toExtensions(creep) && !creep.memory.gatheredFromStorage){
+                if(!actionDeposit.toExtensions(creep)){
                     if(!actionDeposit.toStorage(creep)){
                         actionDeposit.toContainer(creep);
                     }
