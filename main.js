@@ -12,15 +12,12 @@ module.exports.loop = function () {
     }
 
 
-
-
     try {
         runStructures.run();
     }
     catch(err){
         console.log("Error in structures routine: " + err);
     }
-
 
 
     try{
