@@ -21,7 +21,7 @@ var link = {
                     }
                 }
                 //Send the energy to the collection link with the most room
-                depositLink.transferEnergy(targetLink, depositLink - targetLink);
+                depositLink.transferEnergy(targetLink, depositLink.energy - targetLink.energy);
             }
         }
 

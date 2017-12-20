@@ -12,8 +12,6 @@ WIP AI for the game screeps.
 
 **claim** to send an expeditionary force to claim a room.
 
-**block** to send a force of dummy creeps to a location.
-
 ### Structures
 
 Place a **collecLink** on a link to set as collection point.

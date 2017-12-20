@@ -2,6 +2,35 @@ var actionMove = require('action.move');
 
 var actionDepositResources = {
 
+    findLinksInRangeOf: function(target, range, waitOnCapacity){
+
+        for(var structure in target){
+
+            for(var link in target[structure].room.memory.depositLinks) {
+
+                var link = Game.getObjectById(target[structure].room.memory.depositLinks[link]);
+                var rangeTest = target[structure].pos.findInRange(link);
+
+                if(rangeTest <= range){
+                    if(link.energy < link.energyCapacity){
+                        return true;
+                    }
+                    else{
+                        if(waitOnCapacity){
+                            return true;
+                        }
+                        else{
+                            return false;
+                        }
+                    }
+                }
+                else{
+                    return false;
+                }
+            }
+        }
+    },
+
     toLink: function(creep){
 
         if(creep.room.memory.depositLinks.length > 0){
@@ -9,7 +38,6 @@ var actionDepositResources = {
             for(var link in creep.room.memory.depositLinks){
 
                 var rangeTest = creep.pos.getRangeTo(Game.getObjectById(creep.room.memory.depositLinks[link]));
-
 
                 if(rangeTest <= 3){
 
@@ -20,6 +48,66 @@ var actionDepositResources = {
                 }
             }
             return false;
+        }
+
+        return false;
+    },
+
+    toLinkInRangeOf: function(creep, target, range, waitOnCapacity){
+
+        var linkFound = false;
+
+        if(creep.room.memory.depositLinks.length > 0){
+
+
+
+            for(var link in creep.room.memory.depositLinks){
+
+                var currentLink = Game.getObjectById(creep.room.memory.depositLinks[link]);
+
+                    if(target.length != undefined){
+
+                        for(var object in target){
+
+                            if(target[object].pos.getRangeTo(currentLink) <= range){
+
+                                if(currentLink.energy != currentLink.energyCapacity){
+
+                                    if (creep.transfer(currentLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                        actionMove.travelTo(creep, currentLink);
+                                    }
+
+                                    return true;
+                                }
+                                else{
+                                    linkFound = true;
+                                }
+
+                            }
+                        }
+                    }
+                    else{
+                        if(target.pos.getRangeTo(currentLink) <= range){
+
+                            if(currentLink.energy != currentLink.energyCapacity){
+
+                                if (creep.transfer(currentLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                    actionMove.travelTo(creep, currentLink);
+                                }
+
+                                return true;
+                            }
+                            else{
+                                linkFound = true;
+                            }
+
+                        }
+                    }
+            }
+        }
+
+        if(waitOnCapacity && linkFound){
+            return true;
         }
 
         return false;

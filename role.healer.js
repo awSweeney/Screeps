@@ -4,10 +4,10 @@ var roleHealer = {
     run: function(creep) {
 
         if(creep.memory.attacking) {
-            creep.say('💚 Healing');
+            creep.say('💚');
         }
         if(!creep.memory.attacking) {
-            //creep.say('💤 Standby');
+            creep.say('💤');
         }
 
         var target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {
@@ -25,10 +25,15 @@ var roleHealer = {
             }
         }
         else{
+            //Goto a location if nothing to fight
             creep.memory.attacking = false;
-            var posInAnotherRoom = new RoomPosition(6, 15, 'W37N21');
-            creep.moveTo(posInAnotherRoom, {visualizePathStyle: {stroke: '#ffffff'}});
-            //creep.travelTo(Game.flags.standby);
+
+            if(Game.flags.attack != undefined){
+                creep.moveTo(Game.flags.attack, {visualizePathStyle: {stroke: '#FF0000'}});
+            }
+            else{
+                creep.moveTo(Game.flags.standby);
+            }
         }
 
     }

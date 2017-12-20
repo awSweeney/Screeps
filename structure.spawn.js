@@ -1,5 +1,6 @@
 var generalTypes = require('role.generalTypes');
 var expansionTypes = require('role.expansionTypes');
+var offenseTypes = require('role.offenseTypes');
 
 const SPAWN_DELAY_TICKS = 90; //Delay in ticks a spawn goes into cooldown after spawning a creep
 
@@ -111,6 +112,35 @@ var ManagerSpawn = {
 
             }
 
+
+            if(Game.flags.attack != undefined) {
+                var rangeCheck = Infinity;
+                var closestSpawn;
+
+                for (var type in offenseTypes) {
+
+                        //Find the closest spawn point to the attack point
+                        for (var spawn in Game.spawns) {
+
+                            if (rangeCheck > PathFinder.search(Game.spawns[spawn].pos, Game.flags.attack.pos).cost && !PathFinder.search(Game.spawns[spawn].pos, Game.flags.attack.pos).incomplete) {
+                                rangeCheck = PathFinder.search(Game.spawns[spawn].pos, Game.flags.attack.pos).cost;
+                                closestSpawn = spawn;
+                            }
+                        }
+
+                        //If a vaild path was found spawn the creep
+                        if (rangeCheck != Infinity) {
+
+                            var energyAvailable = currentSpawn.room.energyAvailable * 0.75;
+                            energyAvailable = energyAvailable < 300 ? energyAvailable = 300 : energyAvailable;
+                            offenseTypes[type](closestSpawn, energyAvailable);
+                        }
+                        else {
+                            console.log("Valid path for attack location not found");
+                        }
+
+                }
+            }
         }
 }
 

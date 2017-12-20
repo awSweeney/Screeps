@@ -22,8 +22,10 @@ var roleUpgrader = {
             }
         }
         else {
-            if(!actionCollect.fromStorage(creep)){
-                actionCollect.fromContainer(creep);
+            if(!actionCollect.fromLinkInRangeOf(creep, creep.room.controller, 5, true)){
+                if(!actionCollect.fromStorage(creep)){
+                    actionCollect.fromContainer(creep);
+                }
             }
         }
 	}

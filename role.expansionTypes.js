@@ -1,4 +1,4 @@
-const PIONEER_MIN_QTY = 2;
+const PIONEER_MIN_QTY = 4;
 const CLAIMER_MIN_QTY = 1;
 
 module.exports = {
