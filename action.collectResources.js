@@ -24,6 +24,64 @@ var actionCollectResources = {
         return false;
     },
 
+    fromLinkInRangeOf: function(creep, target, range, waitOnCapacity){
+
+        if(creep.room.memory.collectLinks.length > 0){
+
+            var linkFound = false;
+
+            for(var link in creep.room.memory.collectLinks){
+
+                var currentLink = Game.getObjectById(creep.room.memory.collectLinks[link]);
+
+                    if(target.length != undefined){
+
+                        for(var object in target){
+
+                            if(target[object].pos.getRangeTo(currentLink.pos) <= range){
+
+                                if(currentLink.energy > 0){
+
+                                    if (creep.withdraw(currentLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                        actionMove.travelTo(creep, currentLink);
+                                    }
+
+                                    return true;
+                                }
+                                else{
+                                    linkFound = true;
+                                }
+
+                            }
+                        }
+                    }
+                    else{
+                        if(target.pos.getRangeTo(currentLink.pos) <= range){
+
+                            if(currentLink.energy > 0){
+
+                                if (creep.withdraw(currentLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                                    actionMove.travelTo(creep, currentLink);
+                                }
+
+                                return true;
+                            }
+                            else{
+                                linkFound = true;
+                            }
+
+                        }
+                    }
+            }
+
+            if(linkFound && waitOnCapacity){
+                return true;
+            }
+        }
+
+        return false;
+    },
+
     fromExtensions: function(creep) {
 
 
