@@ -9,7 +9,7 @@ var actionDepositResources = {
             for(var link in target[structure].room.memory.depositLinks) {
 
                 var link = Game.getObjectById(target[structure].room.memory.depositLinks[link]);
-                var rangeTest = target[structure].pos.findInRange(link);
+                var rangeTest = target[structure].pos.getRangeTo(link);
 
                 if(rangeTest <= range){
                     if(link.energy < link.energyCapacity){

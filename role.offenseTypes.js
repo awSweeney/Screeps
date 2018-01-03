@@ -20,7 +20,7 @@ module.exports = {
             var allowance = Math.floor(energy / 200);
 
             if (allowance >= 1) {
-                for (var x = 0; x < allowance; x++) {
+                for (var x = 0; x < allowance && x < 10; x++) {
                     body.push(TOUGH);
                     body.push(TOUGH);
                     body.push(MOVE);
@@ -58,7 +58,7 @@ module.exports = {
             var allowance = Math.floor(energy / 370);
 
             if (allowance >= 1) {
-                for (var x = 0; x < allowance; x++) {
+                for (var x = 0; x < allowance && x < 10; x++) {
                     body.push(TOUGH);
                     body.push(TOUGH);
                     body.push(MOVE);

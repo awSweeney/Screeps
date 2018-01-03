@@ -183,7 +183,7 @@ module.exports = {
                 var allowance = Math.floor(energy / 260);
 
                 if (allowance >= 1) {
-                    for (var x = 0; x < allowance; x++) {
+                    for (var x = 0; x < allowance && x < 10; x++) {
                         body.push(TOUGH);
                         body.push(MOVE);
                         body.push(MOVE);
@@ -234,7 +234,7 @@ module.exports = {
                 var allowance = Math.floor(energy / 200);
 
                 if(allowance >= 1){
-                    for(var x = 0; x < allowance; x++){
+                    for(var x = 0; x < allowance && x <= 7; x++){
                         body.push(WORK);
                         body.push(CARRY);
                         body.push(MOVE);
@@ -251,6 +251,8 @@ module.exports = {
     },
 
     upgrader: function(spawn, energy){
+        
+        
         var minimumQuantity = spawn.room.memory.sourceNodes;
         var memory = {memory: {role: 'upgrader', home: spawn.room.name}};
         var name = 'upgrader'
@@ -267,7 +269,7 @@ module.exports = {
             var allowance = Math.floor(energy / 200);
 
             if(allowance >= 1){
-                for(var x = 0; x < allowance; x++){
+                for(var x = 0; x < allowance && x <= 7; x++){
                     body.push(WORK);
                     body.push(CARRY);
                     body.push(MOVE);
@@ -299,7 +301,7 @@ module.exports = {
             var allowance = Math.floor(energy / 200);
 
             if(allowance >= 1){
-                for(var x = 0; x < allowance; x++){
+                for(var x = 0; x < allowance && x <= 7; x++){
                     body.push(WORK);
                     body.push(CARRY);
                     body.push(MOVE);

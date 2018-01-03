@@ -2,6 +2,9 @@ var roleUpgrader = require('role.upgrader');
 var actionCollect = require('action.collectResources');
 var actionMove = require('action.move');
 
+const WALL_HEALTH_TARGET = 150000;
+const START_REPAIR_THRESHOLD = 0.75;
+
 var roleRepairer = {
 
     /** @param {Creep} creep **/
@@ -33,7 +36,7 @@ var roleRepairer = {
             else {
                 //Fix everything else if it's under 75% durability
                 var repairTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: (s) => (s.hits < (s.hitsMax * 0.75) && s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART)
+                    filter: (s) => (s.hits < (s.hitsMax * START_REPAIR_THRESHOLD) && s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART)
                 });
 
                 if (repairTarget != undefined) {
@@ -44,7 +47,7 @@ var roleRepairer = {
                 else {
                     //Repair some walls if we have nothing to do
                     repairTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                        filter: (s) => (s.hits < 150000 && s.structureType == STRUCTURE_WALL || s.hits < 150000 && s.structureType == STRUCTURE_RAMPART)
+                        filter: (s) => (s.hits < WALL_HEALTH_TARGET && s.structureType == STRUCTURE_WALL || s.hits < WALL_HEALTH_TARGET && s.structureType == STRUCTURE_RAMPART)
                     });
 
                     if (repairTarget != undefined) {
