@@ -1,6 +1,6 @@
 ## Screeps AI
 
-WIP AI for the game screeps.
+WIP AI for the game screeps. By no means is this the most efficient way to do things currently. As with most things screeps, things were coded in haste to deal with rising situations.
 
 ## Flag Usage
 
