@@ -1,5 +1,4 @@
-var actionCollect = require('action.collectResources');
-var actionDeposit = require('action.depositResouces');
+var action = require('action.creep');
 
 var roleHauler = {
 
@@ -26,7 +25,7 @@ var roleHauler = {
         if(!creep.memory.depositing) {
 
                 //Look for links
-                if(!actionCollect.fromLinkInRangeOf(creep, storageHub, 5, false)){
+                if(!action.collectFromLinkInRangeOf(creep, storageHub, 5, false)){
                     //If there's no links look for containers, but only if there's a place to put it
                     var storageTest = false;
 
@@ -35,11 +34,11 @@ var roleHauler = {
                         storageTest = storage < creep.room.storage.storeCapacity ? true : false;
                     }
                     
-                    if(creep.room.energyAvailable < creep.room.energyCapacityAvailable || storageTest || actionDeposit.findLinksInRangeOf(storageHub, 5, false)){
-                        if(!actionCollect.fromContainer(creep)){
+                    if(creep.room.energyAvailable < creep.room.energyCapacityAvailable || storageTest || action.findLinksInRangeOf(storageHub, 5, false)){
+                        if(!action.collectFromContainer(creep)){
                             //If we can't collect from a container move to collect from storage, if there's a place to put it
-                            if(creep.room.energyAvailable < creep.room.energyCapacityAvailable || actionDeposit.findLinksInRangeOf(storageHub, 5, false)){
-                                if(!actionCollect.fromStorage(creep) && creep.carry > 0){
+                            if(creep.room.energyAvailable < creep.room.energyCapacityAvailable || action.findLinksInRangeOf(storageHub, 5, false)){
+                                if(!action.collectFromStorage(creep) && creep.carry > 0){
                                     creep.memory.depositing = true;
                                 }
                             }
@@ -52,11 +51,11 @@ var roleHauler = {
         }
         else{
 
-            if(!actionDeposit.toSpawn(creep)){
-                if(!actionDeposit.toExtensions(creep)){
-                    if(!actionDeposit.toLinkInRangeOf(creep, storageHub, 5, false)){
-                        if(!actionDeposit.toStorage(creep)){
-                            actionDeposit.toContainer(creep);
+            if(!action.depositToSpawn(creep)){
+                if(!action.depositToExtensions(creep)){
+                    if(!action.depositToLinkInRangeOf(creep, storageHub, 5, false)){
+                        if(!action.depositToStorage(creep)){
+                            action.depositToContainer(creep);
                         }
                     }
                 }

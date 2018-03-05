@@ -1,5 +1,4 @@
-var depositResources = require('action.depositResouces');
-var actionMove = require('action.move');
+var action = require('action.creep');
 
 var roleHarvester = {
 
@@ -8,7 +7,7 @@ var roleHarvester = {
 
         //Get the harvester back in the right room if it happens to path outside
         if(creep.memory.home != creep.room.name){
-            creep.moveTo(Game.rooms[creep.memory.home].controller);
+            action.travelTo(creep, Game.rooms[creep.memory.home].controller);
         }
         else{
             
@@ -19,20 +18,18 @@ var roleHarvester = {
                 if (target != undefined && target.energy > 0) {
 
                     if (creep.harvest(target, RESOURCE_ENERGY, creep.energyCapacity) == ERR_NOT_IN_RANGE) {
-                        actionMove.travelTo(creep, target);
+                        action.travelTo(creep, target);
                     }
                 }
             }
             else {
-                if(!depositResources.toLink(creep)){
-                    if(!depositResources.toContainer(creep)){
-                        if(!depositResources.toStorage(creep)){
-                            depositResources.toSpawn(creep);
+                if(!action.depositToLink(creep)){
+                    if(!action.depositToContainer(creep)){
+                        if(!action.depositToStorage(creep)){
+                            action.depositToSpawn(creep);
                         }
                     }
                 }
-
-
             }
         }
 	}

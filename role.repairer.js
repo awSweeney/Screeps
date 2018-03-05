@@ -1,8 +1,7 @@
 var roleUpgrader = require('role.upgrader');
-var actionCollect = require('action.collectResources');
-var actionMove = require('action.move');
+var action = require('action.creep');
 
-const WALL_HEALTH_TARGET = 150000;
+const WALL_HEALTH_TARGET = 175000;
 const START_REPAIR_THRESHOLD = 0.75;
 
 var roleRepairer = {
@@ -30,7 +29,7 @@ var roleRepairer = {
 
             if(tower != undefined){
                 if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    actionMove.travelTo(creep, tower);
+                    action.travelTo(creep, tower);
                 }
             }
             else {
@@ -41,7 +40,7 @@ var roleRepairer = {
 
                 if (repairTarget != undefined) {
                     if (creep.repair(repairTarget) == ERR_NOT_IN_RANGE) {
-                        actionMove.travelTo(creep, repairTarget);
+                        action.travelTo(creep, repairTarget);
                     }
                 }
                 else {
@@ -52,7 +51,7 @@ var roleRepairer = {
 
                     if (repairTarget != undefined) {
                         if (creep.repair(repairTarget) == ERR_NOT_IN_RANGE) {
-                            actionMove.travelTo(creep, repairTarget);
+                            action.travelTo(creep, repairTarget);
                         }
                     }
                     else {
@@ -62,8 +61,8 @@ var roleRepairer = {
             }
         }
         else {
-            if(!actionCollect.fromStorage(creep)){
-                actionCollect.fromContainer(creep);
+            if(!action.collectFromStorage(creep)){
+                action.collectFromContainer(creep);
             }
         }
     }

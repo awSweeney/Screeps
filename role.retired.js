@@ -1,6 +1,6 @@
 //Retire a creep ensuring any energy it's holding doesn't get lost on death
 
-var actionDeposit = require('action.depositResouces');
+var action = require('action.creep');
 
 var roleRetired = {
 
@@ -17,8 +17,8 @@ var roleRetired = {
                 creep.say("♻");
 
                 if(creep.carry.energy > 0 && creep.memory.dropped == false){
-                    if(!actionDeposit.toStorage(creep)){
-                        if(!actionDeposit.toContainer(creep)){
+                    if(!action.depositToStorage(creep)){
+                        if(!action.depositToContainer(creep)){
                             creep.memory.dropped = true;
                         }
                     }

@@ -1,5 +1,5 @@
 const SOLDIER_QTY = 2;
-const WARRIORS_PER_HEALER = 2;
+const WARRIORS_PER_HEALER = 1;
 
 module.exports = {
 
