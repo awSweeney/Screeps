@@ -17,10 +17,14 @@ var roleRangedDefender = {
             }
         });
 
+        
+
         //Other creep types
         if(target == undefined){
+
             target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
-                filter: (target) => (target.owner.username != "slots")
+                filter: (target) => (FRIENDLY_PLAYERS.toLowerCase().search(target.owner.username.toLowerCase()) != -1) ||
+                                    target.name.toLowerCase().search('invader_') != -1
             });
         }
 

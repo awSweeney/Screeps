@@ -20,8 +20,9 @@ var roleSoldier = {
 
         //Other creep types
         if(target == undefined){
-            target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
-                filter: (target) => (target.owner.username != "slots")
+            target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
+                filter: (target) => (FRIENDLY_PLAYERS.toLowerCase().search(target.owner.username.toLowerCase()) != -1) ||
+                                    target.name.toLowerCase().search('invader_') != -1
             });
         }
 

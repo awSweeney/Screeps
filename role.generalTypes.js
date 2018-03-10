@@ -134,6 +134,7 @@ module.exports = {
             return 0;
         }
 
+
         var quantity = spawn.room.find(FIND_MY_CREEPS, {
             filter: (creep) => (
                 creep.memory.role == name
@@ -141,21 +142,34 @@ module.exports = {
         })
 
         if (quantity.length < minimumQuantity()) {
-            var allowance = Math.floor(energy / 150);
+            
+            var storageStructures = spawn.room.find(FIND_STRUCTURES, {
+            filter: (structure) =>
+                structure.structureType == STRUCTURE_CONTAINER ||
+                structure.structureType == STRUCTURE_LINK ||
+                structure.structureType == STRUCTURE_EXTENSION ||
+                structure.structureType == STRUCTURE_STORAGE
+            });
+            
+            //We only want to spawn haulers if there's actually structures for them to haul to/from
+            if (storageStructures.length > 0){
+                
+                var allowance = Math.floor(energy / 150);
 
-            if (allowance >= 1) {
-                for (var x = 1; x <= allowance && x <= HAULER_MAX_CARRY; x++) {
-
-                    body.push(CARRY);
-
-                    if(x % 2 == 0){
-                        body.push(MOVE);
+                if (allowance >= 1) {
+                    for (var x = 1; x <= allowance && x <= HAULER_MAX_CARRY; x++) {
+    
+                        body.push(CARRY);
+    
+                        if(x % 2 == 0){
+                            body.push(MOVE);
+                        }
                     }
                 }
-            }
-
-            if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
-                return true;
+    
+                if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
+                    return true;
+                }
             }
         }
 
