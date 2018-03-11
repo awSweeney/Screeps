@@ -7,11 +7,11 @@ var roleHauler = {
 
         if(creep.carry.energy == 0) {
             creep.memory.depositing = false;
-            creep.say('🔄');
+            creep.say(EMOJI_WORKING);
         }
         if(!creep.memory.depositing && creep.carry.energy == creep.carryCapacity) {
             creep.memory.depositing = true;
-            creep.say('✔');
+            creep.say(EMOJI_COMPLETE);
         }
 
         var storageHub = creep.room.find(FIND_STRUCTURES, {

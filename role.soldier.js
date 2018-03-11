@@ -4,10 +4,10 @@ var roleSoldier = {
     run: function(creep) {
 
         if(creep.memory.attacking) {
-            creep.say('⚔');
+            creep.say(EMOJI_ATTACKING);
         }
         if(!creep.memory.attacking) {
-            creep.say('💤');
+            creep.say(EMOJI_SLEEP);
         }
 
 

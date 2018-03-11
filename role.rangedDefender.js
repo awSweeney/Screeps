@@ -4,10 +4,10 @@ var roleRangedDefender = {
     run: function(creep) {
 
         if(creep.memory.attacking) {
-            creep.say('⚔');
+            creep.say(EMOJI_ATTACKING);
         }
         if(!creep.memory.attacking) {
-            creep.say('💤');
+            creep.say(EMOJI_SLEEP);
         }
 
         //Prioritize Healers

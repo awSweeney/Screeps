@@ -14,7 +14,7 @@ var roleRetired = {
         else{
             if(creep.memory.role == 'retired'){
 
-                creep.say("♻");
+                creep.say(EMOJI_RECYCLE);
 
                 if(creep.carry.energy > 0 && creep.memory.dropped == false){
                     if(!action.depositToStorage(creep)){

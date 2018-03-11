@@ -7,11 +7,11 @@ var roleUpgrader = {
 
         if(creep.memory.upgrading && creep.carry.energy == 0) {
             creep.memory.upgrading = false;
-            creep.say('🔄');
+            creep.say(EMOJI_WORKING);
 	    }
 	    if(!creep.memory.upgrading && creep.carry.energy == creep.carryCapacity) {
 	        creep.memory.upgrading = true;
-	        creep.say('⚡');
+	        creep.say(EMOJI_UPGRADE);
 	    }
 
 	    if(creep.memory.upgrading) {

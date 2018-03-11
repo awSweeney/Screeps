@@ -51,7 +51,7 @@ var ManagerSpawn = {
                         //Show details over spawn
                         if(!currentSpawn.spawning) {
                             currentSpawn.room.visual.text(
-                                "⏳ " + (SPAWN_DELAY_TICKS - (Game.time - currentSpawn.room.memory.lastSpawn)),
+                                EMOJI_HOURGLASS + " " + (SPAWN_DELAY_TICKS - (Game.time - currentSpawn.room.memory.lastSpawn)),
                                 currentSpawn.pos.x,
                                 currentSpawn.pos.y + 1.5,
                                 {align: 'center', opacity: 0.8});

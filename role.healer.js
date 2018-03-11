@@ -4,10 +4,10 @@ var roleHealer = {
     run: function(creep) {
 
         if(creep.memory.attacking) {
-            creep.say('💚');
+            creep.say(EMOJI_HEALING);
         }
         if(!creep.memory.attacking) {
-            creep.say('💤');
+            creep.say(EMOJI_SLEEP);
         }
 
         var target = creep.pos.findClosestByPath(FIND_MY_CREEPS, {

@@ -8,11 +8,11 @@ var roleBuilder = {
 
 	    if(creep.memory.building && creep.carry.energy == 0) {
             creep.memory.building = false;
-            creep.say('🔄');
+            creep.say(EMOJI_WORKING);
 	    }
 	    if(!creep.memory.building && creep.carry.energy == creep.carryCapacity) {
 	        creep.memory.building = true;
-	        creep.say('🔨');
+	        creep.say(EMOJI_BUILDING);
 	    }
 
 	    if(creep.memory.building) {
@@ -20,7 +20,7 @@ var roleBuilder = {
 
             if(targets.length > 0) {
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    actionMove.travelTo(creep, targets[0]);
+                    action.travelTo(creep, targets[0]);
                 }
             }
             else{

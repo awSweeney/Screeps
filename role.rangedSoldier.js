@@ -4,10 +4,10 @@ var roleRangedSoldier = {
     run: function(creep) {
 
         if(creep.memory.attacking) {
-            creep.say('🏹');
+            creep.say(EMOJI_RANGED);
         }
         if(!creep.memory.attacking) {
-            creep.say('💤');
+            creep.say(EMOJI_SLEEP);
         }
 
         //Prioritize Healers
