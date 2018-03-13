@@ -6,12 +6,11 @@ require('constants');
 module.exports.loop = function () {
 
     try{
-        runRooms.run();
+       runRooms.run(); 
     }
     catch(err){
         console.log("Error in setup routine: " + err);
     }
-
 
     try {
         runStructures.run();
@@ -19,7 +18,6 @@ module.exports.loop = function () {
     catch(err){
         console.log("Error in structures routine: " + err);
     }
-
 
     try{
         runCreeps.run();

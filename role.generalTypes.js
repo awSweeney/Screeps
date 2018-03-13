@@ -1,5 +1,5 @@
 //const EXTENSIONS_PER_HAULER = 20;
-const CONSTRUCTION_SITES_PER_BUILDER = 20;
+const CONSTRUCTION_SITES_PER_BUILDER = 25;
 const HARVEST_PER_TICK_GOAL = 20; //Takes 10 energy drain per tick to drain a source node, double that for safety
 const HAULER_MAX_CARRY = 800 / CARRY_CAPACITY;
 
@@ -109,117 +109,10 @@ module.exports = {
 
     },
 
-    hauler: function(spawn, energy){
-
-
-        var memory = {memory: {role: 'hauler', home: spawn.room.name, gatheredFromStorage: false}};
-        var name = 'hauler'
-        var body = [];
-
-        var minimumQuantity = function(){
-
-            var extensions = spawn.room.find(FIND_STRUCTURES, {
-                filter: (structure) => structure.structureType == STRUCTURE_EXTENSION
-            });
-
-
-            if(extensions != undefined){
-
-                return spawn.room.memory.sourceNodes;
-
-                /*var quantity = extensions.length / EXTENSIONS_PER_HAULER;
-                return quantity >= 0 ? Math.ceil(quantity) : Math.floor(quantity);*/
-            }
-
-            return 0;
-        }
-
-
-        var quantity = spawn.room.find(FIND_MY_CREEPS, {
-            filter: (creep) => (
-                creep.memory.role == name
-            )
-        })
-
-        if (quantity.length < minimumQuantity()) {
-            
-            var storageStructures = spawn.room.find(FIND_STRUCTURES, {
-            filter: (structure) =>
-                structure.structureType == STRUCTURE_CONTAINER ||
-                structure.structureType == STRUCTURE_LINK ||
-                structure.structureType == STRUCTURE_EXTENSION ||
-                structure.structureType == STRUCTURE_STORAGE
-            });
-            
-            //We only want to spawn haulers if there's actually structures for them to haul to/from
-            if (storageStructures.length > 0){
-                
-                var allowance = Math.floor(energy / 150);
-
-                if (allowance >= 1) {
-                    for (var x = 1; x <= allowance && x <= HAULER_MAX_CARRY; x++) {
-    
-                        body.push(CARRY);
-    
-                        if(x % 2 == 0){
-                            body.push(MOVE);
-                        }
-                    }
-                }
-    
-                if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    },
-
-    rangedDefender: function(spawn, energy){
-
-        var memory = {memory: {role: 'rangedDefender'}};
-        var name = 'rangedDefender'
-        var body = [];
-
-        var hostiles = Game.rooms[spawn.room.name].find(FIND_HOSTILE_CREEPS);
-
-
-        if(hostiles.length > 0){
-
-            var quantity =  spawn.room.find(FIND_MY_CREEPS,{
-                filter: (creep) => (
-                    creep.memory.role == name
-                )
-            })
-
-            if(quantity.length < hostiles.length) {
-                var allowance = Math.floor(energy / 260);
-
-                if (allowance >= 1) {
-                    for (var x = 0; x < allowance && x < 10; x++) {
-                        body.push(TOUGH);
-                        body.push(MOVE);
-                        body.push(MOVE);
-                        body.push(RANGED_ATTACK);
-                    }
-
-                    if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    },
-
     builder: function(spawn, energy){
-
 
         var minimumQuantity = function(){
             var buildingProjects = spawn.room.find(FIND_CONSTRUCTION_SITES);
-
-
 
             if(buildingProjects != undefined){
 
@@ -264,6 +157,110 @@ module.exports = {
         return false;
     },
 
+    hauler: function(spawn, energy){
+
+
+        var memory = {memory: {role: 'hauler', home: spawn.room.name, gatheredFromStorage: false}};
+        var name = 'hauler'
+        var body = [];
+
+        var minimumQuantity = function(){
+
+            var extensions = spawn.room.find(FIND_STRUCTURES, {
+                filter: (structure) => structure.structureType == STRUCTURE_EXTENSION
+            });
+
+
+            if(extensions != undefined){
+
+                return spawn.room.memory.sourceNodes;
+
+                /*var quantity = extensions.length / EXTENSIONS_PER_HAULER;
+                return quantity >= 0 ? Math.ceil(quantity) : Math.floor(quantity);*/
+            }
+
+            return 0;
+        }
+
+
+        var quantity = spawn.room.find(FIND_MY_CREEPS, {
+            filter: (creep) => (
+                creep.memory.role == name
+            )
+        })
+
+        if (quantity.length < minimumQuantity()) {
+            
+            /*var storageStructures = spawn.room.find(FIND_STRUCTURES, {
+            filter: (structure) =>
+                structure.structureType == STRUCTURE_CONTAINER ||
+                structure.structureType == STRUCTURE_LINK ||
+                structure.structureType == STRUCTURE_EXTENSION ||
+                structure.structureType == STRUCTURE_STORAGE
+            });*/
+            
+            //We only want to spawn haulers if there's actually structures for them to haul to/from
+            //if (storageStructures.length > 0){
+                
+                var allowance = Math.floor(energy / 150);
+
+                if (allowance >= 1) {
+                    for (var x = 1; x <= allowance && x <= HAULER_MAX_CARRY; x++) {
+    
+                        body.push(CARRY);
+    
+                        if(x % 2 == 0){
+                            body.push(MOVE);
+                        }
+                    }
+                }
+    
+                if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
+                    return true;
+                }
+            //} storage structure check end
+        }
+
+        return false;
+    },
+
+    rangedDefender: function(spawn, energy){
+
+        var memory = {memory: {role: 'rangedDefender'}};
+        var name = 'rangedDefender'
+        var body = [];
+
+        var hostiles = Game.rooms[spawn.room.name].find(FIND_HOSTILE_CREEPS);
+
+
+        if(hostiles.length > 0){
+
+            var quantity =  spawn.room.find(FIND_MY_CREEPS,{
+                filter: (creep) => (
+                    creep.memory.role == name
+                )
+            })
+
+            if(quantity.length < hostiles.length) {
+                var allowance = Math.floor(energy / 260);
+
+                if (allowance >= 1) {
+                    for (var x = 0; x < allowance && x < 10; x++) {
+                        body.push(TOUGH);
+                        body.push(MOVE);
+                        body.push(MOVE);
+                        body.push(RANGED_ATTACK);
+                    }
+
+                    if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    },
+
     upgrader: function(spawn, energy){
         
         
@@ -304,29 +301,32 @@ module.exports = {
         var name = 'repairer'
         var body = [];
 
-        var quantity =  spawn.room.find(FIND_MY_CREEPS,{
-            filter: (creep) => (
-                creep.memory.role == name
-            )
-        })
+        var buildingCheck = spawn.room.find(FIND_MY_STRUCTURES);
 
+        if(buildingCheck.length > 1){
+           var quantity =  spawn.room.find(FIND_MY_CREEPS,{
+                filter: (creep) => (
+                    creep.memory.role == name
+                )
+            })
 
-        if(quantity.length < minimumQuantity){
-            var allowance = Math.floor(energy / 200);
-
-            if(allowance >= 1){
-                for(var x = 0; x < allowance && x <= 7; x++){
-                    body.push(WORK);
-                    body.push(CARRY);
-                    body.push(MOVE);
+            if(quantity.length < minimumQuantity){
+                var allowance = Math.floor(energy / 200);
+    
+                if(allowance >= 1){
+                    for(var x = 0; x < allowance && x <= 7; x++){
+                        body.push(WORK);
+                        body.push(CARRY);
+                        body.push(MOVE);
+                    }
                 }
-            }
-
-            if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
-                return true;
-            }
+    
+                if(spawn.spawnCreep(body, name + Game.time, memory) == OK){
+                    return true;
+                }
+            } 
         }
-
+        
         return false;
     },
 
