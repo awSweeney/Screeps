@@ -2,7 +2,7 @@
 
 WIP AI for the game screeps. By no means is this the most efficient way to do things currently. As with most things screeps, things were coded in haste to deal with rising situations.
 
-##Automation Features
+## Automation Features
 
 Extensions, initial road paths and spawning/creep scaling are all roughly automated.
 
