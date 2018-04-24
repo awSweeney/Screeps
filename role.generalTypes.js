@@ -1,5 +1,5 @@
 //const EXTENSIONS_PER_HAULER = 20;
-const CONSTRUCTION_SITES_PER_BUILDER = 25;
+const CONSTRUCTION_SITES_PER_BUILDER = 10;
 const HARVEST_PER_TICK_GOAL = 20; //Takes 10 energy drain per tick to drain a source node, double that for safety
 const HAULER_MAX_CARRY = 800 / CARRY_CAPACITY;
 

@@ -284,6 +284,202 @@ function constructionManager(){
     }
 }
 
+function buildExtensionFlower(room){
+    
+    /*
+      Attempt to build the extension grid
+      TODO: Make this better when we're not under attack
+    */
+    
+    var spawn = Game.rooms[room].find(FIND_MY_STRUCTURES, {
+                filter: (structure) => {
+                    return (
+                        structure.structureType == STRUCTURE_SPAWN)
+                }
+    });
+    
+    
+    if(spawn.length > 0){
+       
+        var startRow = 4;
+        var spacing = 2;
+        var currentPos = new RoomPosition(spawn[0].pos.x, spawn[0].pos.y, spawn[0].pos.roomName);
+        currentPos.x -= startRow;
+        currentPos.y -= startRow;
+        var flagnum = 1;
+        var maxRowCheck = 24; //Room is 48 across
+        
+        var extensionsBuilt = Game.rooms[room].find(FIND_MY_STRUCTURES, {
+                filter: (structure) => {
+                    return (
+                        structure.structureType == STRUCTURE_EXTENSION)
+                }
+        });
+        
+        var extensionsBuilding = Game.rooms[room].find(FIND_MY_CONSTRUCTION_SITES, {
+                filter: (structure) => {
+                    return (
+                        structure.structureType == STRUCTURE_EXTENSION)
+                }
+        });
+        
+        var extensionAllowance = determineExtensionAllowance(room);
+        
+        if(extensionsBuilt.length){
+            extensionAllowance -= extensionsBuilt.length; 
+        }
+        
+        if(extensionsBuilding.length){
+            extensionAllowance -= extensionsBuilding.length;
+        }
+        
+        if(extensionAllowance > 0){
+            
+            for(var z = 0; z < maxRowCheck && extensionAllowance > 0; z++){
+            
+                for(i = 0; i < startRow && extensionAllowance > 0; i++){
+                    currentPos.x += spacing;
+                    if(validConstructionSite(room, currentPos)){
+                        var position = JSON.stringify(currentPos);
+                        requestConstruction(STRUCTURE_EXTENSION, position);
+                        extensionAllowance--;
+                    }
+                }
+                
+                for(i = 0; i < startRow && extensionAllowance > 0; i++){
+                    currentPos.y += spacing;
+                    if(validConstructionSite(room, currentPos)){
+                        var position = JSON.stringify(currentPos);
+                        requestConstruction(STRUCTURE_EXTENSION, position);
+                        extensionAllowance--;
+                    }
+                }
+                
+                for(i = 0; i < startRow && extensionAllowance > 0; i++){
+                    currentPos.x -= spacing;
+                    if(validConstructionSite(room, currentPos)){
+                        var position = JSON.stringify(currentPos);
+                        requestConstruction(STRUCTURE_EXTENSION, position);
+                        extensionAllowance--;
+                    }
+                }
+                
+                for(i = 0; i < startRow && extensionAllowance > 0; i++){
+                    currentPos.y -= spacing;
+                    if(validConstructionSite(room, currentPos)){
+                        var position = JSON.stringify(currentPos);
+                        requestConstruction(STRUCTURE_EXTENSION, position);
+                        extensionAllowance--;
+                    }
+                }
+                
+                currentPos.x -= 1;
+                currentPos.y -= 1;
+                startRow += 1;
+            }
+        }
+        
+        
+        extensionsBuilding = Game.rooms[room].find(FIND_MY_CONSTRUCTION_SITES, {
+                filter: (structure) => {
+                    return (
+                        structure.structureType == STRUCTURE_EXTENSION)
+                }
+        });
+        
+        //Build the roads to go with the new extensions
+        if(extensionsBuilding.length > 0){
+            
+            for(var extension in extensionsBuilding){
+
+                const extensionPosition = new RoomPosition(extensionsBuilding[extension].pos.x, extensionsBuilding[extension].pos.y, extensionsBuilding[extension].pos.roomName);
+
+                var roadPosition = new RoomPosition(extensionPosition.x, extensionPosition.y, extensionPosition.roomName);
+                roadPosition.x += 1;
+                if(validConstructionSite(room, roadPosition)){
+                  requestConstruction(STRUCTURE_ROAD, JSON.stringify(roadPosition));  
+                }
+                
+                roadPosition = new RoomPosition(extensionPosition.x, extensionPosition.y, extensionPosition.roomName);
+                roadPosition.y += 1;
+                if(validConstructionSite(room, roadPosition)){
+                  requestConstruction(STRUCTURE_ROAD, JSON.stringify(roadPosition));  
+                }
+                
+                roadPosition = new RoomPosition(extensionPosition.x, extensionPosition.y, extensionPosition.roomName);
+                roadPosition.x -= 1;
+                if(validConstructionSite(room, roadPosition)){
+                  requestConstruction(STRUCTURE_ROAD, JSON.stringify(roadPosition));  
+                }
+                
+                roadPosition = new RoomPosition(extensionPosition.x, extensionPosition.y, extensionPosition.roomName);
+                roadPosition.y -= 1;
+                if(validConstructionSite(room, roadPosition)){
+                  requestConstruction(STRUCTURE_ROAD, JSON.stringify(roadPosition));  
+                }
+            }
+        }
+        
+    }
+}
+
+function determineExtensionAllowance(room){
+    
+    switch(Game.rooms[room].controller.level){
+        case 8:
+            return 60;
+            break;
+        case 7:
+            return 50;
+            break;
+        case 6:
+            return 40;
+            break;
+        case 5:
+            return 30;
+            break;
+        case 4:
+            return 20;
+            break;
+        case 3:
+            return 10;
+            break;
+        case 2:
+            return 5;
+            break;
+        default:
+            return 0;
+    }
+}
+
+function validConstructionSite(room, position){
+    
+    var look = Game.rooms[room].lookForAt(LOOK_TERRAIN, position);
+    
+    //Is it a wall?
+    if(look.length){
+        if(look != 'wall'){
+            //Is there a structure there? if it's a road kill it
+            look = Game.rooms[room].lookForAt(LOOK_STRUCTURES, position);
+            var lookConstruction = Game.rooms[room].lookForAt(LOOK_CONSTRUCTION_SITES, position);
+            
+            if(look.length){
+                if(look[0].structureType == STRUCTURE_ROAD){
+                    look[0].destroy()
+                    return true;
+                }
+            }
+            else{
+                if(lookConstruction.length == 0){
+                   return true; 
+                }
+            }
+        }
+    }
+    
+    return false;
+}
+
 
 function setupRooms(room) {
     initialSetup(room);
@@ -291,6 +487,11 @@ function setupRooms(room) {
     //setupRecycling(room);
     //updateRoadQueue();
     constructionManager();
+    
+    if(Game.time % 600 == 0){
+        buildExtensionFlower(room);  
+    }
+    
 }
 
 module.exports = {

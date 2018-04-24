@@ -1,4 +1,5 @@
 var action = require('action.creep');
+var roleBuilder = require('role.builder');
 
 var roleHarvester = {
 
@@ -26,7 +27,12 @@ var roleHarvester = {
                 if(!action.depositToLink(creep)){
                     if(!action.depositToContainer(creep)){
                         if(!action.depositToStorage(creep)){
-                            action.depositToSpawn(creep);
+                            if(!action.depositToSpawn(creep)){
+                                //If we can't deposit anywhere and room is still being setup, turn into a builder to jumpstart room
+                                if(creep.room.controller.level <= 2){
+                                    roleBuilder.run(creep);
+                                }
+                            }
                         }
                     }
                 }
