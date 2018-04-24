@@ -488,7 +488,7 @@ function setupRooms(room) {
     //updateRoadQueue();
     constructionManager();
     
-    if(Game.time % 600 == 0){
+    if(Game.time % 1500 == 0){
         buildExtensionFlower(room);  
     }
     
