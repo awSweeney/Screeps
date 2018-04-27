@@ -486,9 +486,10 @@ function setupRooms(room) {
     setupLinks(room);
     //setupRecycling(room);
     //updateRoadQueue();
-    constructionManager();
     
-    if(Game.time % 1500 == 0){
+    //Use this to stagger when rooms run the expensive stuff, room variation makes it run on different ticks
+    var roomSetupVariation = room.substring(4,6);
+    if(Game.time % (600 + roomSetupVariation) == 0){
         buildExtensionFlower(room);  
     }
     
@@ -501,6 +502,10 @@ module.exports = {
             setupRooms(room);
             sourceMonitor(room);
         }
-
+        
+        if(Game.time % 100 == 0){
+           constructionManager(); 
+        }
+        
     }
 };

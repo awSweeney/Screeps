@@ -44,8 +44,8 @@ var runCreeps = {
                 }
             }
 
-            if(creep.memory.role == 'rangedDefender') {
-                roleRangedDefender.run(creep);
+            if(creep.memory.role == 'soldier') {
+                roleSoldier.run(creep);
             }
 
             if(creep.memory.role == 'hauler'){

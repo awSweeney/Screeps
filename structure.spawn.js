@@ -28,7 +28,7 @@ var ManagerSpawn = {
                 energyAvailable = energyAvailable < 300 ? energyAvailable = 300 : energyAvailable;
 
                 //If a room has no harvesters only focus on spawning harvesters, will spawn even if spawn is on cooldown
-                if(harvesters.length == 0){
+                if(harvesters.length < currentSpawn.room.memory.roomRequiredHarvesters){
                     generalTypes.harvester(currentSpawn, energyAvailable)
                 }
                 else{

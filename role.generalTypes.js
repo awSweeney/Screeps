@@ -224,16 +224,22 @@ module.exports = {
         return false;
     },
 
-    rangedDefender: function(spawn, energy){
+    meleeDefender: function(spawn, energy){
 
-        var memory = {memory: {role: 'rangedDefender'}};
-        var name = 'rangedDefender'
+        var memory = {memory: {role: 'soldier'}};
+        var name = 'soldier'
         var body = [];
 
         var hostiles = Game.rooms[spawn.room.name].find(FIND_HOSTILE_CREEPS);
-
+        
 
         if(hostiles.length > 0){
+
+            var hostileStrength = hostiles[0].getActiveBodyparts(ATTACK);
+            hostileStrength += hostiles[0].getActiveBodyparts(RANGED_ATTACK);
+            hostileStrength += hostiles[0].getActiveBodyparts(HEAL);
+            hostileStrength += hostiles[0].getActiveBodyparts(MOVE);
+            hostileStrength += hostiles[0].getActiveBodyparts(TOUGH);
 
             var quantity =  spawn.room.find(FIND_MY_CREEPS,{
                 filter: (creep) => (
@@ -242,14 +248,15 @@ module.exports = {
             })
 
             if(quantity.length < hostiles.length) {
-                var allowance = Math.floor(energy / 260);
+                var allowance = Math.floor(energy / 200);
 
                 if (allowance >= 1) {
-                    for (var x = 0; x < allowance && x < 10; x++) {
+                    for (var x = 0; x < allowance && x < 10 && x < Math.ceil((hostileStrength / 5) + 1); x++) {
+                        body.push(TOUGH);
                         body.push(TOUGH);
                         body.push(MOVE);
                         body.push(MOVE);
-                        body.push(RANGED_ATTACK);
+                        body.push(ATTACK);
                     }
 
                     if(spawn.spawnCreep(body, name + Game.time, memory) == OK){

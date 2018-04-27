@@ -23,7 +23,24 @@ var roleUpgrader = {
         else {
             if(!action.collectFromLinkInRangeOf(creep, creep.room.controller, 5, true)){
                 if(!action.collectFromStorage(creep)){
-                    action.collectFromContainer(creep);
+                    if(!action.collectFromContainer(creep)){
+                        //Check to see if it's a new room
+	        	        var EnergyStructures = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                                                filter: (s) => (
+                                                s.structureType == STRUCTURE_CONTAINER ||
+                                                s.structureType == STRUCTURE_STORAGE)
+                        })
+
+
+                        if(EnergyStructures == null){
+
+                            var sources = creep.pos.findClosestByPath(FIND_SOURCES);
+	        	    
+	        	            if (creep.harvest(sources) == ERR_NOT_IN_RANGE) {
+                                action.travelTo(creep, sources);
+                            }
+                        }
+                    }
                 }
             }
         }

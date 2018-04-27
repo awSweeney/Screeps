@@ -1,3 +1,5 @@
+var action = require('action.creep');
+
 var roleSoldier = {
 
     /** @param {Creep} creep **/
@@ -31,18 +33,17 @@ var roleSoldier = {
             creep.memory.attacking = true;
 
             if(creep.attack(target) == ERR_NOT_IN_RANGE){
-                creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
+                action.travelTo(creep,target);
             }
         }
         else{
-
             //Hit some buildings if there's no enemy creeps
             var target = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES);
 
             if(target != undefined){
                 creep.memory.attacking = true;
                 if(creep.attack(target) == ERR_NOT_IN_RANGE){
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#FF0000'}});
+                    action.travelTo(creep,target);
                 }
             }
             else{
@@ -50,10 +51,10 @@ var roleSoldier = {
                 creep.memory.attacking = false;
 
                 if(Game.flags.attack != undefined){
-                    creep.moveTo(Game.flags.attack, {visualizePathStyle: {stroke: '#FF0000'}});
+                    action.travelTo(creep,Game.flags.attack);
                 }
                 else{
-                    creep.moveTo(Game.flags.standby);
+                    action.travelTo(creep,Game.flags.standby);
                 }
             }
         }
