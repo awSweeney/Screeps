@@ -16,22 +16,28 @@ var roleBuilder = {
 	    }
 
 	    if(creep.memory.building) {
-	        //Building priorities, build roads last
-	        var targets = creep.room.find(FIND_CONSTRUCTION_SITES, {
-                    filter: (s) => (
-                        s.structureType != STRUCTURE_ROAD)
-            });
-            
-            if(targets.length == 0){
-                targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-            }
+	        
+	        //Check to see if target is still valid
+	        if(!Game.getObjectById(creep.memory.target)){
+	            delete creep.memory.target;
+	        }
+	        
+	        //Get a new target if need be
+	        if(creep.room.memory.buildQueue.length && creep.memory.target == undefined){
+	            creep.memory.target = creep.room.memory.buildQueue[0];
+	            //Remove the target from the list if it hasn't updated yet.
+	            if(!Game.getObjectById(creep.memory.target)){
+	                creep.room.memory.buildQueue.shift();
+	            }
+	        }
 
-            if(targets.length > 0) {
-                if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    action.travelTo(creep, targets[0]);
+            //Do the building
+            if(creep.memory.target != undefined) {
+                if(creep.build(Game.getObjectById(creep.memory.target)) == ERR_NOT_IN_RANGE) {
+                    action.travelTo(creep, Game.getObjectById(creep.memory.target));
                 }
             }
-            else{
+            else{ //Repair stuff if we have nothing else to do
                 roleRepairer.run(creep);
             }
 	    }

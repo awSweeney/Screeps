@@ -105,6 +105,7 @@ function setupLinks(room){
 }
 
 function initialSetup(room){
+    //Fills memory with all the things the room uses to function as well as creates the initial room road and container layout
     
     var spawnCheck = Game.rooms[room].find(FIND_MY_STRUCTURES, {
                 filter: (structure) => {
@@ -175,7 +176,7 @@ function initialSetup(room){
     }
 }
 
-function setupRecycling(room){
+//function setupRecycling(room){
 
     //Recycle gains were not efficient for breaking hauler path routines
     //If this is reactivated also reactivate recycle portion of roles.retired
@@ -200,7 +201,7 @@ function setupRecycling(room){
             }
         }
     }*/
-}
+//}
 
 //If you want your floor covered in roads, letting creeps request roads is a great idea
 /*function updateRoadQueue(){
@@ -239,7 +240,41 @@ function setupRecycling(room){
     }
 }*/
 
+function updateBuildQueue(room){
+    /*
+    Updates a build queue for each room that builders will get orders from.
+    TODO: if the bot ever becomes automated enough, update this to not scan for
+    construction sites and update off constructionManager() pops
+    */
+    
+    //Easy way to prioritize roads last, concat at the end of the list
+    var nonRoads = Game.rooms[room].find(FIND_CONSTRUCTION_SITES, {
+                    filter: (s) => (
+                        s.structureType != STRUCTURE_ROAD)
+    });
+            
+
+    var roads = Game.rooms[room].find(FIND_CONSTRUCTION_SITES, {
+                    filter: (s) => (
+                        s.structureType == STRUCTURE_ROAD)
+    });
+    
+    var buildQueue = new Array();
+    
+    //For effciency sake we only need the id of the site
+    for(var site in nonRoads){
+        buildQueue.push(nonRoads[site].id);
+    }
+    
+    for(var site in roads){
+        buildQueue.push(roads[site].id)
+    }
+    
+    Game.rooms[room].memory.buildQueue = buildQueue;
+}
+
 function requestConstruction(type, location){
+    //Submits a contruction request to the construction queue in root memory if valid 
     
     if(Memory.constructionQueue == null){
         Memory.constructionQueue = new Array();
@@ -258,6 +293,7 @@ function requestConstruction(type, location){
 }
 
 function constructionManager(){
+    //Takes a request from construction queue in root memory and places the construction site if not maxed on available construction sites
 
     if(Memory.constructionQueue != null){
     
@@ -301,14 +337,15 @@ function buildExtensionFlower(room){
     
     if(spawn.length > 0){
        
-        var startRow = 4;
-        var spacing = 2;
-        var currentPos = new RoomPosition(spawn[0].pos.x, spawn[0].pos.y, spawn[0].pos.roomName);
+        var startRow = 4; //Amount of spaces between the spawn and the first row of extensions
+        var spacing = 2; //Spacing in between extensions
+        var currentPos = new RoomPosition(spawn[0].pos.x, spawn[0].pos.y, spawn[0].pos.roomName); //Where we attempt to build the first extension
         currentPos.x -= startRow;
         currentPos.y -= startRow;
         var flagnum = 1;
         var maxRowCheck = 24; //Room is 48 across
         
+        //Combine the amount of extensions currently building, with the amount already built to determine how many we can build
         var extensionsBuilt = Game.rooms[room].find(FIND_MY_STRUCTURES, {
                 filter: (structure) => {
                     return (
@@ -333,6 +370,7 @@ function buildExtensionFlower(room){
             extensionAllowance -= extensionsBuilding.length;
         }
         
+        //Rotate around the flower pattern until we find a suitible spot
         if(extensionAllowance > 0){
             
             for(var z = 0; z < maxRowCheck && extensionAllowance > 0; z++){
@@ -424,7 +462,7 @@ function buildExtensionFlower(room){
 }
 
 function determineExtensionAllowance(room){
-    
+    //Amount of extensions allowed at each room level
     switch(Game.rooms[room].controller.level){
         case 8:
             return 60;
@@ -453,7 +491,7 @@ function determineExtensionAllowance(room){
 }
 
 function validConstructionSite(room, position){
-    
+    //Check to see if a spot is a valid construction site. Will remove roads if that's the object obstructing construction
     var look = Game.rooms[room].lookForAt(LOOK_TERRAIN, position);
     
     //Is it a wall?
@@ -488,9 +526,15 @@ function setupRooms(room) {
     //updateRoadQueue();
     
     //Use this to stagger when rooms run the expensive stuff, room variation makes it run on different ticks
+    //Pulls the last 2 digits from the room name
     var roomSetupVariation = room.substring(4,6);
     if(Game.time % (600 + roomSetupVariation) == 0){
-        buildExtensionFlower(room);  
+        buildExtensionFlower(room); 
+    }
+    //Pulls the last digit from the room name for smaller variations
+    roomSetupVariation = room.substring(5,6);
+    if(Game.time % (25 + roomSetupVariation) == 0){
+        updateBuildQueue(room);
     }
     
 }

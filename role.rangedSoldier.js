@@ -12,15 +12,15 @@ var roleRangedSoldier = {
 
         //Prioritize Healers
         var target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS,{
-            filter: function(object){
-                return object.getActiveBodyparts(HEAL) > 0;
-            }
+            filter: (target) => (target.getActiveBodyparts(HEAL) > 0 &&
+                                    FRIENDLY_PLAYERS.toLowerCase().indexOf(target.owner.username.toLowerCase()) == -1) ||
+                                    target.name.toLowerCase().search('invader_') != -1
         });
 
         //Other creep types
         if(target == undefined){
             target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
-                filter: (target) => (FRIENDLY_PLAYERS.toLowerCase().search(target.owner.username.toLowerCase()) != -1) ||
+                filter: (target) => (FRIENDLY_PLAYERS.toLowerCase().indexOf(target.owner.username.toLowerCase()) == -1) ||
                                     target.name.toLowerCase().search('invader_') != -1
             });
         }

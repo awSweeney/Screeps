@@ -29,7 +29,7 @@ var roleHarvester = {
                         if(!action.depositToStorage(creep)){
                             if(!action.depositToSpawn(creep)){
                                 //If we can't deposit anywhere and room is still being setup, turn into a builder to jumpstart room
-                                if(creep.room.controller.level <= 2){
+                                if(creep.room.controller.level == 1){
                                     roleBuilder.run(creep);
                                 }
                             }
