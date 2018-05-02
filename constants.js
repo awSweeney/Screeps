@@ -16,6 +16,9 @@ global.EMOJI_COMPLETE = '\u2714'
 global.EMOJI_HEALING = fixedFromCharCode(0x0F49A)
 global.EMOJI_WORKING = fixedFromCharCode(0x01F504)
 
+//Stop repairing walls at this point
+//TODO: Make this dynamic
+global.WALL_HEALTH_TARGET = 175000;
 
 /*Unicode workaround for Emojis. Javascript doesn't support 5 digit unicode characters by default and 
 string.fromcharcode doesn't work since we don't have access to the right fonts. */

@@ -1,9 +1,6 @@
 var roleUpgrader = require('role.upgrader');
 var action = require('action.creep');
 
-const WALL_HEALTH_TARGET = 175000;
-const START_REPAIR_THRESHOLD = 0.75;
-
 var roleRepairer = {
 
     /** @param {Creep} creep **/
@@ -21,42 +18,51 @@ var roleRepairer = {
         if(creep.memory.building) {
 
             //Check to see if we need to refill towers first
-            var tower = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+            var tower = Game.rooms[creep.memory.home].find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity);
                 }
             });
 
-            if(tower != undefined){
-                if (creep.transfer(tower, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    action.travelTo(creep, tower);
+            if(tower.length){
+                if (creep.transfer(tower[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    action.travelTo(creep, tower[0]);
                 }
             }
             else {
-                //Fix everything else if it's under 75% durability
-                var repairTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                    filter: (s) => (s.hits < (s.hitsMax * START_REPAIR_THRESHOLD) && s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART)
-                });
-
-                if (repairTarget != undefined) {
-                    if (creep.repair(repairTarget) == ERR_NOT_IN_RANGE) {
-                        action.travelTo(creep, repairTarget);
+               
+               var target;
+               
+               if(creep.memory.target != undefined){
+                   target = Game.getObjectById(creep.memory.target);
+               }
+               
+                //Check to see if target is still valid | If the object exists || if it's at max health || or if it' still in the queue
+                if(target != undefined){
+                    if(target.hits == target.hitsMax || Game.rooms[creep.memory.home].memory.repairQueue.indexOf(creep.memory.target) == -1){
+                        delete creep.memory.target;
                     }
                 }
-                else {
-                    //Repair some walls if we have nothing to do
-                    repairTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-                        filter: (s) => (s.hits < WALL_HEALTH_TARGET && s.structureType == STRUCTURE_WALL || s.hits < WALL_HEALTH_TARGET && s.structureType == STRUCTURE_RAMPART)
-                    });
-
-                    if (repairTarget != undefined) {
-                        if (creep.repair(repairTarget) == ERR_NOT_IN_RANGE) {
-                            action.travelTo(creep, repairTarget);
-                        }
+                
+                //Get a new target if need be
+                if(Game.rooms[creep.memory.home].memory.repairQueue.length && creep.memory.target == undefined){
+                    creep.memory.target = Game.rooms[creep.memory.home].memory.repairQueue[0];
+                    target = Game.getObjectById(creep.memory.target);
+                    
+                    //Remove the target from the list if the list hasn't been updated yet
+                    if(target == undefined || target.hits == target.hitsMax){
+                        Game.rooms[creep.memory.home].memory.repairQueue.shift();
                     }
-                    else {
-                        roleUpgrader.run(creep);
+                }
+                
+                //Repair the thing
+                if(target != undefined){
+                    if(creep.repair(target) == ERR_NOT_IN_RANGE){
+                        action.travelTo(creep, target);   
                     }
+                }
+                else{
+                    roleUpgrader.run(creep);
                 }
             }
         }

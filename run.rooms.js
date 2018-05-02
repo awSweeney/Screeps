@@ -273,6 +273,37 @@ function updateBuildQueue(room){
     Game.rooms[room].memory.buildQueue = buildQueue;
 }
 
+function updateRepairQueue(room){
+    
+    /*
+    Updates a repair queue for each room that repairers will get orders from.
+    TODO: Sort by lowest?
+    */
+    
+    const START_REPAIR_THRESHOLD = 0.75;
+    
+    var repairTargets = Game.rooms[room].find(FIND_STRUCTURES, {
+        filter: (s) => (s.hits < (s.hitsMax * START_REPAIR_THRESHOLD) && s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART)
+    });
+
+    var repairQueue = new Array();
+    
+    for(var site in repairTargets){
+        repairQueue.push(repairTargets[site].id);   
+    }
+
+    //Walls low priority so they go at the end of the list
+    repairTargets = Game.rooms[room].find(FIND_STRUCTURES, {
+        filter: (s) => (s.hits < WALL_HEALTH_TARGET && s.structureType == STRUCTURE_WALL || s.hits < WALL_HEALTH_TARGET && s.structureType == STRUCTURE_RAMPART)
+    });
+    
+    for(var site in repairTargets){
+        repairQueue.push(repairTargets[site].id);
+    }
+    
+    Game.rooms[room].memory.repairQueue = repairQueue;
+}
+
 function requestConstruction(type, location){
     //Submits a contruction request to the construction queue in root memory if valid 
     
@@ -520,23 +551,28 @@ function validConstructionSite(room, position){
 
 
 function setupRooms(room) {
-    initialSetup(room);
-    setupLinks(room);
-    //setupRecycling(room);
-    //updateRoadQueue();
     
-    //Use this to stagger when rooms run the expensive stuff, room variation makes it run on different ticks
-    //Pulls the last 2 digits from the room name
-    var roomSetupVariation = room.substring(4,6);
-    if(Game.time % (600 + roomSetupVariation) == 0){
-        buildExtensionFlower(room); 
-    }
-    //Pulls the last digit from the room name for smaller variations
-    roomSetupVariation = room.substring(5,6);
-    if(Game.time % (25 + roomSetupVariation) == 0){
-        updateBuildQueue(room);
-    }
+    var spawnCheck = Game.rooms[room].find(FIND_MY_STRUCTURES, {filter: (structure) => {return (structure.structureType == STRUCTURE_SPAWN)}});
     
+    if(spawnCheck.length > 0 ){
+        
+        initialSetup(room);
+        setupLinks(room);
+    
+        //Use this to stagger when rooms run the expensive stuff, room variation makes it run on different ticks
+        //Pulls the last 2 digits from the room name
+        var roomSetupVariation = room.substring(4,6);
+        if(Game.time % (600 + roomSetupVariation) == 0){
+            buildExtensionFlower(room); 
+        }
+        
+        //Pulls the last digit from the room name for smaller variations
+        roomSetupVariation = room.substring(5,6);
+        if(Game.time % (25 + roomSetupVariation) == 0){
+            updateBuildQueue(room);
+            updateRepairQueue(room);
+        }
+    }
 }
 
 module.exports = {

@@ -112,11 +112,10 @@ module.exports = {
     builder: function(spawn, energy){
 
         var minimumQuantity = function(){
-            var buildingProjects = spawn.room.find(FIND_CONSTRUCTION_SITES);
-
+            var buildingProjects = spawn.room.memory.buildQueue.length;
             if(buildingProjects != undefined){
 
-                var quantity = buildingProjects.length / CONSTRUCTION_SITES_PER_BUILDER;
+                var quantity = buildingProjects / CONSTRUCTION_SITES_PER_BUILDER;
 
                 return quantity >= 0 ? Math.ceil(quantity) : Math.floor(quantity);
             }
@@ -130,12 +129,7 @@ module.exports = {
         var body = [];
 
         if(minimumQuantity() > 0){
-            var quantity =  spawn.room.find(FIND_MY_CREEPS,{
-                filter: (creep) => (
-                    creep.memory.role == name
-                )
-            })
-
+            var quantity =  _(Game.creeps).filter((creep) => creep.memory.role == 'builder'  && creep.memory.home == spawn.room.name).value();
 
             if(quantity.length < minimumQuantity()){
                 var allowance = Math.floor(energy / 200);
@@ -308,15 +302,13 @@ module.exports = {
         var name = 'repairer'
         var body = [];
 
-        var buildingCheck = spawn.room.find(FIND_MY_STRUCTURES);
+        var buildingCheck = spawn.room.memory.repairQueue.length;
 
-        if(buildingCheck.length > 1){
-           var quantity =  spawn.room.find(FIND_MY_CREEPS,{
-                filter: (creep) => (
-                    creep.memory.role == name
-                )
-            })
-
+        if(buildingCheck > 0){
+           
+            var quantity =  _(Game.creeps).filter((creep) => creep.memory.role == 'repairer'  && creep.memory.home == spawn.room.name).value();
+            
+            
             if(quantity.length < minimumQuantity){
                 var allowance = Math.floor(energy / 200);
     

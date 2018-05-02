@@ -18,16 +18,16 @@ var roleBuilder = {
 	    if(creep.memory.building) {
 	        
 	        //Check to see if target is still valid
-	        if(!Game.getObjectById(creep.memory.target)){
+	        if(!Game.getObjectById(creep.memory.target) && creep.memory.target != undefined){
 	            delete creep.memory.target;
 	        }
 	        
 	        //Get a new target if need be
-	        if(creep.room.memory.buildQueue.length && creep.memory.target == undefined){
-	            creep.memory.target = creep.room.memory.buildQueue[0];
+	        if(Game.rooms[creep.memory.home].memory.buildQueue.length && creep.memory.target == undefined){
+	            creep.memory.target = Game.rooms[creep.memory.home].memory.buildQueue[0];
 	            //Remove the target from the list if it hasn't updated yet.
 	            if(!Game.getObjectById(creep.memory.target)){
-	                creep.room.memory.buildQueue.shift();
+	                Game.rooms[creep.memory.home].memory.buildQueue.shift();
 	            }
 	        }
 
