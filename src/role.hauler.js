@@ -16,8 +16,6 @@ var roleHauler = {
 
         var storageHub = creep.room.find(FIND_STRUCTURES, {
             filter: (structure) =>
-                structure.structureType == STRUCTURE_SPAWN ||
-                structure.structureType == STRUCTURE_EXTENSION ||
                 structure.structureType == STRUCTURE_STORAGE
         })
 
@@ -54,8 +52,10 @@ var roleHauler = {
             if(!action.depositToSpawn(creep)){
                 if(!action.depositToExtensions(creep)){
                     if(!action.depositToLinkInRangeOf(creep, storageHub, 5, false)){
-                        if(!action.depositToStorage(creep)){
-                            action.depositToContainer(creep);
+                        if(!action.depositEnergyToTerminal(creep)){
+                           if(!action.depositToStorage(creep)){
+                                action.depositToContainer(creep);
+                            } 
                         }
                     }
                 }

@@ -329,33 +329,40 @@ module.exports = {
         return false;
     },
 
-/*
-
-    rangedSoldier: {
-            minimumQuantity: 2,
-            properties: [RANGED_ATTACK, MOVE, MOVE],
-            memory: function(spawn) {
-            return {memory: {role: 'rangedSoldier'}}
-        },
-        name: 'rangedSoldier'
-    },*/
-
-   /* disruptor: {
-        minimumQuantity: 0,
-        properties: [MOVE, MOVE],
-        memory: function(spawn) {
-            return {memory: {role: 'disruptor', home: spawn.room.name}}
-        },
-        name: 'disruptor'
+    mineralMiner: function(spawn, energy){
+        var name = 'mineralMiner'
+        var body = [];
+        if(spawn.room.controller.level >= 6 && COLLECT_MINERALS == true){
+            for(var mineral in spawn.room.memory.minerals){
+                
+                if(_(Game.creeps).filter((creep) => creep.memory.role == 'mineralMiner'  && creep.memory.home == spawn.room.name && creep.memory.assignedNode == spawn.room.memory.minerals[mineral]).value() == 0){
+                    var node = Game.getObjectById(spawn.room.memory.minerals[mineral]);
+                    if(node.mineralAmount > 0){
+                            var extractor = node.room.find(FIND_STRUCTURES, {
+                                    filter: (structure) => structure.structureType == STRUCTURE_EXTRACTOR
+                            });
+                    
+                            if(extractor.length){
+                                    var allowance = Math.floor(energy / 200);
+    
+                                    if(allowance >= 1){
+                                    for(var x = 0; x < allowance && x <= 7; x++){
+                                        body.push(WORK);
+                                        body.push(CARRY);
+                                        body.push(MOVE);
+                                    }
+                            }
+    
+                            if(spawn.spawnCreep(body, name + Game.time, {memory: {role: 'mineralMiner', home: spawn.room.name, assignedNode: spawn.room.memory.minerals[mineral]}}) == OK){
+                                return true;
+                            }
+                        } 
+                    }
+                    
+                }
+            }  
+        }
+        
+        return false;
     },
-
-    healer: {
-        minimumQuantity: 0,
-        properties: [HEAL, MOVE, MOVE],
-        memory: function(spawn) {
-            return {memory: {role: 'healer', home: spawn.room.name}}
-        },
-        name: 'healer'
-    },
-*/
 };

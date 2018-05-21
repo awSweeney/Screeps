@@ -10,6 +10,7 @@ var roleHauler = require('role.hauler');
 var roleRetired = require('role.retired');
 var roleRangedDefender = require('role.rangedDefender');
 var roleHealer = require('role.healer');
+var roleMineralMiner = require('role.mineralMiner');
 
 var runCreeps = {
     run: function () {
@@ -66,6 +67,10 @@ var runCreeps = {
 
             if (creep.memory.role == 'repairer') {
                 roleRepairer.run(creep);
+            }
+            
+            if(creep.memory.role == 'mineralMiner'){
+                roleMineralMiner.run(creep);
             }
         }
     }

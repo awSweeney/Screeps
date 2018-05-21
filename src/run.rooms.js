@@ -202,8 +202,26 @@ function initialSetup(room){
                     requestConstruction(STRUCTURE_ROAD, position);
                 }
             }
+            
+            
+            
         }
         
+        if(Game.rooms[room].memory.mineralNodeList == undefined){
+                //Find the room's mineral node and add it to mineral node list
+                var mineralNode = Game.rooms[room].find(FIND_MINERALS);
+        
+                if(mineralNode.length){
+                    //Never seen a room with more than one mineral node, but just in case...
+                    var mineralNodeList = new Array();
+            
+                    for(var x = 0; x < mineralNode.length; x++){
+                        mineralNodeList.push(mineralNode[x].id);
+                    }
+            
+                    Game.rooms[room].memory.minerals = mineralNodeList;
+                }
+            }
     }
 }
 
@@ -293,6 +311,20 @@ function buildExtractor(room){
         if(mineral.length){
            var extractorLocation = JSON.stringify(mineral[0].pos);
            requestConstruction(STRUCTURE_EXTRACTOR, extractorLocation);
+           
+           //Path from spawn to extractor
+           var spawn = Game.rooms[room].find(FIND_MY_STRUCTURES, {
+                filter: (structure) => {
+                    return (
+                        structure.structureType == STRUCTURE_SPAWN)
+                }
+            });
+           
+           var pathfinder = PathFinder.search(mineral[0].pos, spawn[0].pos);
+           for(var node in pathfinder.path){
+              var position = JSON.stringify(pathfinder.path[node]);
+              requestConstruction(STRUCTURE_ROAD, position);
+           }
         }
     }
 }
@@ -756,7 +788,7 @@ function buildExtensionFlower(room){
         }
         
         
-        extensionsBuilding = Game.rooms[room].find(FIND_MY_CONSTRUCTION_SITES, {
+        extensionsBuilding = Game.rooms[room].find(FIND_MY_STRUCTURES, {
                 filter: (structure) => {
                     return (
                         structure.structureType == STRUCTURE_EXTENSION)

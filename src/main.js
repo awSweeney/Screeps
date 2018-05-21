@@ -1,7 +1,7 @@
 var runCreeps = require('run.creeps');
 var runStructures = require('run.structures');
 var runRooms = require('run.rooms');
-require('constants');
+require('config');
 
 module.exports.loop = function () {
 

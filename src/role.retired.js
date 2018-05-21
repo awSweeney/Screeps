@@ -7,7 +7,7 @@ var roleRetired = {
     /** @param {Creep} creep **/
     run: function(creep) {
 
-        if(creep.ticksToLive <= 50 && creep.memory.role != 'retired'){
+        if(creep.ticksToLive <= 100 && creep.memory.role != 'retired'){
             creep.memory.role = 'retired';
             creep.memory.dropped = false;
         }
@@ -16,7 +16,7 @@ var roleRetired = {
 
                 creep.say(EMOJI_RECYCLE);
 
-                if(creep.carry.energy > 0 && creep.memory.dropped == false){
+                if(_.sum(creep.carry) > 0 && creep.memory.dropped == false){
                     if(!action.depositToStorage(creep)){
                         if(!action.depositToContainer(creep)){
                             creep.memory.dropped = true;

@@ -20,6 +20,10 @@ global.EMOJI_WORKING = fixedFromCharCode(0x01F504)
 //TODO: Make this dynamic
 global.WALL_HEALTH_TARGET = 175000;
 
+//Toggles for mineral related actitives
+global.COLLECT_MINERALS = true;
+global.AUTO_SELL_MINERALS = true;
+
 /*Unicode workaround for Emojis. Javascript doesn't support 5 digit unicode characters by default and 
 string.fromcharcode doesn't work since we don't have access to the right fonts. */
 function fixedFromCharCode (codePt) {

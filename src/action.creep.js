@@ -30,6 +30,13 @@ var actionCreep = {
         return false;
     },
 
+    collectMineral: function(creep, target){
+    
+        if(creep.harvest(target) == ERR_NOT_IN_RANGE){
+            this.travelTo(creep, target);
+        }
+    },
+
     collectFromLinkInRangeOf: function(creep, target, range, waitOnCapacity){
 
         if(creep.room.memory.collectLinks.length > 0){
@@ -282,23 +289,66 @@ var actionCreep = {
 
         return false;
     },
+    
+    depositToTerminal: function(creep){
+        //Generic dump everything into terminal
+        
+        if(Game.rooms[creep.memory.home].terminal != undefined){
+            
+            var target = Game.rooms[creep.memory.home].terminal;
+            
+            if(_.sum(target.store) < target.storeCapacity){
+                for(const resourceType in creep.carry) {
+                    if(creep.transfer(target, resourceType) == ERR_NOT_IN_RANGE){
+                        this.travelTo(creep, target);
+                    }
+                }
+
+                return true;
+            }
+        }
+        
+        return false;
+    },
+    
+    depositEnergyToTerminal: function(creep){
+        //Hard cap on how much energy we're investing into the terminal
+        
+        if(Game.rooms[creep.memory.home].terminal != undefined){
+            
+            var target = Game.rooms[creep.memory.home].terminal;
+            
+            if(target.store[RESOURCE_ENERGY] < 2500 && _.sum(target.store) < target.storeCapacity){
+                for(const resourceType in creep.carry) {
+                    if(creep.transfer(target, resourceType) == ERR_NOT_IN_RANGE){
+                        this.travelTo(creep, target);
+                    }
+                }
+
+                return true;
+            }
+        }
+        
+        return false;
+    },
 
     depositToStorage: function (creep) {
+        //Generic dump everything into storage
 
-        var target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-            filter: (structure) => {
-                return (structure.structureType == STRUCTURE_STORAGE) &&
-                    _.sum(structure.store) < structure.storeCapacity;
+        if (Game.rooms[creep.memory.home].storage != undefined) {
+            
+            var target = Game.rooms[creep.memory.home].storage;
+
+            if(_.sum(target.store) < target.storeCapacity){
+                for(const resourceType in creep.carry) {
+                    if(creep.transfer(target, resourceType) == ERR_NOT_IN_RANGE){
+                        this.travelTo(creep, target);
+                    }
+                }
+
+                return true;
             }
-        });
-
-        if (target != undefined) {
-
-            if (creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                this.travelTo(creep, target);
-            }
-
-            return true;
+            
         }
 
         return false;
