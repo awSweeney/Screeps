@@ -19,58 +19,41 @@ var runCreeps = {
             var creep = Game.creeps[name];
 
             //check to see if it's time to retire the creep.
-            if(creep.memory.role != 'soldier' || creep.memory.role != 'healer'){
+            if(!CREEP_RECYCLE_EXCLUSION_LIST.includes(creep.memory.role)){
                 roleRetired.run(creep);
             }
 
-            if(Game.flags.attack != undefined){
-
-                if(creep.memory.role == 'soldier'){
+            switch(creep.memory.role){
+                case 'solider':
                     roleSoldier.run(creep);
-                }
-
-                if(creep.memory.role == "healer"){
+                    break;
+                case 'healer':
                     roleHealer.run(creep);
-                }
-            }
-
-            if(Game.flags.claim != undefined){
-
-                if(creep.memory.role == 'claimer'){
+                    break;
+                case 'hauler':
+                    roleHauler.run(creep);
+                    break;
+                case 'harvester':
+                    roleHarvester.run(creep);
+                    break;
+                case 'upgrader':
+                    roleUpgrader.run(creep);
+                    break;
+                case 'builder':
+                    roleBuilder.run(creep);
+                    break;
+                case 'repairer':
+                    roleRepairer.run(creep);
+                    break;
+                case 'mineralMiner':
+                    roleMineralMiner.run(creep);
+                    break;
+                case 'claimer':
                     roleClaimer.run(creep);
-                }
-
-                if(creep.memory.role == 'pioneer'){
+                    break;
+                case 'pioneer':
                     rolePioneer.run(creep);
-                }
-            }
-
-            if(creep.memory.role == 'soldier') {
-                roleSoldier.run(creep);
-            }
-
-            if(creep.memory.role == 'hauler'){
-                roleHauler.run(creep);
-            }
-
-            if(creep.memory.role == 'harvester') {
-                roleHarvester.run(creep);
-            }
-
-            if (creep.memory.role == 'upgrader') {
-                roleUpgrader.run(creep);
-            }
-
-            if (creep.memory.role == 'builder') {
-                roleBuilder.run(creep);
-            }
-
-            if (creep.memory.role == 'repairer') {
-                roleRepairer.run(creep);
-            }
-            
-            if(creep.memory.role == 'mineralMiner'){
-                roleMineralMiner.run(creep);
+                    break;
             }
         }
     }

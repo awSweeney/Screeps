@@ -1,5 +1,3 @@
-//const typesThatCanRequestRoads = ["harvester", "hauler", "upgrader"];
-
 function sourceMonitor(room){
 
     var spawnCheck = Game.rooms[room].find(FIND_MY_STRUCTURES, {
@@ -232,7 +230,7 @@ function buildUpgradesPerLevel(room){
     var level = Game.rooms[room].controller.level;
     
     if(level == 8){
-        buildObserver(room);
+        //buildObserver(room);
         buildRampartsAroundHub(room);
         //power spawns
         //nuker
@@ -457,43 +455,6 @@ function buildStorage(room){
     }*/
 //}
 
-//If you want your floor covered in roads, letting creeps request roads is a great idea
-/*function updateRoadQueue(){
-    
-    
-    if(Memory.roadQueue == null){
-       Memory.roadQueue = new Array();  
-    }
-    
-    
-    for(var name in Game.creeps) {
-
-        var creep = Game.creeps[name];
-        var authorizedCreep = (typesThatCanRequestRoads.indexOf(creep.memory.role) > -1)
-        
-        if(authorizedCreep){
-            var roadFound = creep.room.lookForAt(LOOK_STRUCTURES, creep.pos);
-            var constructionFound = creep.room.lookForAt(LOOK_CONSTRUCTION_SITES, creep.pos);
-            
-            
-            if(!roadFound.length && !constructionFound.length){
-               
-               var position = JSON.stringify(creep.pos);
-               var dupeCheck = Memory.roadQueue.indexOf(position);
-
-               if(dupeCheck == -1){
-               
-                   Memory.roadQueue.push(position);
-               }
-               else{
-                   Memory.roadQueue.splice(dupeCheck,1);
-                   requestConstruction(STRUCTURE_ROAD, position);
-               }
-            }
-        }
-    }
-}*/
-
 function updateBuildQueue(room){
     /*
     Updates a build queue for each room that builders will get orders from.
@@ -533,8 +494,6 @@ function updateRepairQueue(room){
     Updates a repair queue for each room that repairers will get orders from.
     TODO: Sort by lowest?
     */
-    
-    const START_REPAIR_THRESHOLD = 0.75;
     
     var repairTargets = Game.rooms[room].find(FIND_STRUCTURES, {
         filter: (s) => (s.hits < (s.hitsMax * START_REPAIR_THRESHOLD) && s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART)
@@ -704,7 +663,6 @@ function buildExtensionFlower(room){
                 }
     });
     
-    
     if(spawn.length > 0){
        
         var startRow = 4; //Amount of spaces between the spawn and the first row of extensions
@@ -712,7 +670,6 @@ function buildExtensionFlower(room){
         var currentPos = new RoomPosition(spawn[0].pos.x, spawn[0].pos.y, spawn[0].pos.roomName); //Where we attempt to build the first extension
         currentPos.x -= startRow;
         currentPos.y -= startRow;
-        var flagnum = 1;
         var maxRowCheck = 24; //Room is 48 across
         
         //Combine the amount of extensions currently building, with the amount already built to determine how many we can build
@@ -833,50 +790,12 @@ function buildExtensionFlower(room){
 
 function determineTowerAllowance(level){
     //Amount of towers allowed per room level
-    if(level >= 3 && level < 5){
-        return 1;
-    }
-    
-    if(level >= 5 && level < 7){
-        return 2;
-    }
-    
-    if(level == 7){
-        return 3;
-    }
-    
-    if(level == 8){
-        return 6;
-    }
+    return CONTROLLER_STRUCTURES['tower'][level];
 }
 
 function determineExtensionAllowance(room){
     //Amount of extensions allowed at each room level
-    switch(Game.rooms[room].controller.level){
-        case 8:
-            return 60;
-            break;
-        case 7:
-            return 50;
-            break;
-        case 6:
-            return 40;
-            break;
-        case 5:
-            return 30;
-            break;
-        case 4:
-            return 20;
-            break;
-        case 3:
-            return 10;
-            break;
-        case 2:
-            return 5;
-            break;
-        default:
-            return 0;
-    }
+    return CONTROLLER_STRUCTURES['extension'][Game.rooms[room].controller.level];
 }
 
 function validConstructionSite(room, position, structureRequest){

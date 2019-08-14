@@ -5,6 +5,7 @@ var terminal = require('structure.terminal');
 
 var runStructures = {
     run: function(){
+        
         var invasion = false;
 
         for (var roomName in Game.rooms) {

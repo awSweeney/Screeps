@@ -16,9 +16,13 @@ global.EMOJI_COMPLETE = '\u2714'
 global.EMOJI_HEALING = fixedFromCharCode(0x0F49A)
 global.EMOJI_WORKING = fixedFromCharCode(0x01F504)
 
+//Creep configs
+global.CREEP_RECYCLE_EXCLUSION_LIST = ['healer', 'solider', 'claimer', 'pioneer']
+
 //Stop repairing walls at this point
 //TODO: Make this dynamic
 global.WALL_HEALTH_TARGET = 175000;
+global.START_REPAIR_THRESHOLD = 0.75;
 
 //Toggles for mineral related actitives
 global.COLLECT_MINERALS = true;
