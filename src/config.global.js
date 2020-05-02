@@ -16,9 +16,6 @@ global.EMOJI_COMPLETE = '\u2714'
 global.EMOJI_HEALING = fixedFromCharCode(0x0F49A)
 global.EMOJI_WORKING = fixedFromCharCode(0x01F504)
 
-//Creep configs
-global.CREEP_RECYCLE_EXCLUSION_LIST = ['healer', 'solider', 'claimer', 'pioneer']
-
 //Stop repairing walls at this point
 //TODO: Make this dynamic
 global.WALL_HEALTH_TARGET = 175000;
@@ -27,6 +24,12 @@ global.START_REPAIR_THRESHOLD = 0.75;
 //Toggles for mineral related actitives
 global.COLLECT_MINERALS = true;
 global.AUTO_SELL_MINERALS = true;
+
+//Constants for creep construction
+global.CONSTRUCTION_SITES_PER_BUILDER = 10;
+global.HARVEST_PER_TICK_GOAL = 20; //Takes 10 energy drain per tick to drain a source node, double that for safety
+global.HAULER_MAX_CARRY = 800 / CARRY_CAPACITY;
+global.CREEP_RECYCLE_EXCLUSION_LIST = ['healer', 'soldier', 'claimer', 'pioneer'];
 
 /*Unicode workaround for Emojis. Javascript doesn't support 5 digit unicode characters by default and 
 string.fromcharcode doesn't work since we don't have access to the right fonts. */

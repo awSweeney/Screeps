@@ -1,3 +1,5 @@
+var populationManager = require('manager.populationQueue');
+
 function sourceMonitor(room){
 
     var spawnCheck = Game.rooms[room].find(FIND_MY_STRUCTURES, {
@@ -838,7 +840,8 @@ function setupRooms(room) {
         
         initialSetup(room);
         setupLinks(room);
-    
+        populationManager.run(room);
+
         //Use this to stagger when rooms run the expensive stuff, room variation makes it run on different ticks
         //Pulls the last 2 digits from the room name
         var roomSetupVariation = room.substring(4,6);
@@ -856,6 +859,7 @@ function setupRooms(room) {
 }
 
 module.exports = {
+    
     run: function(){
 
         for(var room in Game.rooms){
