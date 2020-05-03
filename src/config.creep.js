@@ -21,7 +21,8 @@ global.CREEP_TYPES = {
         priority: 2,
         role: "soldier",
         subType:{
-            default: [TOUGH, TOUGH, MOVE, MOVE, ATTACK]
+            default: [TOUGH, TOUGH, MOVE, MOVE, ATTACK],
+            meleeDefender: [TOUGH, TOUGH, MOVE, MOVE, RANGED_ATTACK]
         }
     },
     'healer': {

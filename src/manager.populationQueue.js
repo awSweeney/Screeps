@@ -91,7 +91,17 @@ var populationQueue = {
     },
 
     soldier : function(roomName){
-        //TODO
+        
+        var hostiles = Game.rooms[spawn.room.name].find(FIND_HOSTILE_CREEPS);
+
+        if(hostiles.length > 0){
+            var currentCount = roomCreeps.filter(creep => creep.memory.role == "soldier").length;
+            var queuedCount = Game.rooms[roomName].memory.spawnQueue.filter(creepType => creepType == "solider").length;
+
+            if(quantity.length < hostiles.length){
+                addCreepToQueue(roomName, determineSpawnAmount(hostiles.length,currentCount,queuedCount), "soldier");
+            }
+        }
     },
 
     healer : function(roomName){
