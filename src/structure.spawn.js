@@ -27,7 +27,7 @@ var ManagerSpawn = {
                 //Only spawn a creep if the cooldown has expired, cooldown allows energy to recover and eases CPU usage
                 if(Game.time - currentSpawn.room.memory.lastSpawn >= SPAWN_DELAY_TICKS) {
                         var prioritySpawn = currentSpawn.room.memory.spawnQueue[0];
-                        var creepDetails = CREEP_TYPES[prioritySpawn].construct(energyAvailable, {'spawn':currentSpawn});
+                        var creepDetails = CREEP_TYPES[prioritySpawn.role].construct(energyAvailable, {'spawn':currentSpawn, 'data' : prioritySpawn});
                         if (currentSpawn.spawnCreep(creepDetails.body, creepDetails.name, creepDetails.memory) == 0) {
                             currentSpawn.room.memory.lastSpawn = Game.time;
                             currentSpawn.room.memory.spawnQueue.shift()

@@ -4,7 +4,7 @@ module.exports = {
         
         var roomName = opts.spawn.room.name;
         var sources = Game.rooms[roomName].memory.sources;
-        var subType = 'default';
+        var subType = opts.data.opts.subType;
         var assignedSource;
 
         for(var source in sources){
@@ -77,7 +77,7 @@ module.exports = {
 
     builder: function(energy, opts){
         
-        var subType = 'default';
+        var subType =  opts.data.opts.subType;
         var roomName = opts.spawn.room.name;
         var baseBody = CREEP_TYPES['builder'].subType[subType];
         var baseCost = determineCost('builder', {subType:subType});
@@ -99,7 +99,7 @@ module.exports = {
 
     hauler: function(energy, opts){
 
-        var subType = 'default';
+        var subType =  opts.data.opts.subType;
         var roomName = opts.spawn.room.name;
         var baseBody = CREEP_TYPES['hauler'].subType[subType];
         var baseCost = determineCost('hauler', {subType:subType});
@@ -128,7 +128,7 @@ module.exports = {
     },
 
     upgrader: function(energy, opts){
-        var subType = 'default';
+        var subType =  opts.data.opts.subType;
         var roomName = opts.spawn.room.name;
         var baseBody = CREEP_TYPES['upgrader'].subType[subType];
         var baseCost = determineCost('upgrader', {subType:subType});
@@ -148,7 +148,7 @@ module.exports = {
     },
 
     repairer: function(energy, opts){
-        var subType = 'default';
+        var subType =  opts.data.opts.subType;
         var roomName = opts.spawn.room.name;
         var baseBody = CREEP_TYPES['repairer'].subType[subType];
         var baseCost = determineCost('repairer', {subType:subType});
@@ -168,7 +168,7 @@ module.exports = {
     },
 
     mineralMiner: function(energy, opts){
-        var subType = 'default';
+        var subType =  opts.data.opts.subType;
         var roomName = opts.spawn.room.name;
         var baseBody = CREEP_TYPES['mineralMiner'].subType[subType];
         var baseCost = determineCost('mineralMiner', {subType:subType});
