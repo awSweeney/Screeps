@@ -24,7 +24,6 @@ var link = {
                 depositLink.transferEnergy(targetLink, depositLink.energy - targetLink.energy);
             }
         }
-
     }
 };
 
